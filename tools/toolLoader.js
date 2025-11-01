@@ -14,7 +14,7 @@ export async function loadTools() {
   const tools = [];
   
   // Categories to load
-  const categories = ['csv', 'ml', 'memory', 'binance', 'analysis'];
+  const categories = ['csv', 'ml', 'memory', 'binance', 'analysis', 'autonomy'];
   
   for (const category of categories) {
     const categoryPath = join(toolsBaseDir, category);

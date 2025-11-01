@@ -100,8 +100,16 @@ class ObscureXAgent {
         anthropic: this.anthropic
       };
       
-      // For ML pipeline generation, pass anthropic client in params
-      if (toolName === 'generateMLPipeline') {
+      // For tools that need AI, pass anthropic client in params
+      const aiRequiredTools = [
+        'generateMLPipeline', 
+        'analyzeContext', 
+        'getExecutionOptions',
+        'recommendOptimizationStrategy',
+        'executeAutonomousDecision'
+      ];
+      
+      if (aiRequiredTools.includes(toolName)) {
         params = { ...params, anthropic: this.anthropic };
       }
       
