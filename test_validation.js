@@ -146,8 +146,8 @@ async function runTests() {
     failed++;
   }
 
-  // Test 5: Pipeline generation (template-based, no API key needed)
-  console.log('Test 5: ML Pipeline generation (template-based)');
+  // Test 5: Pipeline generation (requires API key now)
+  console.log('Test 5: ML Pipeline generation (AI-powered)');
   try {
     const generated = await agent.executeTool('generateMLPipeline', {
       existingCode: null,
@@ -163,8 +163,11 @@ async function runTests() {
       if (existsSync(generated.result.filename)) {
         unlinkSync(generated.result.filename);
       }
+    } else if (!generated.success && generated.error && generated.error.includes('AI (Anthropic API) is required')) {
+      console.log('⚠ SKIP: AI API key not available (test requires Anthropic API)\n');
+      // Don't count as failed since this is expected without API key
     } else {
-      console.log('✗ FAIL: Pipeline generation failed\n');
+      console.log(`✗ FAIL: Pipeline generation failed: ${generated.error || 'Unknown error'}\n`);
       failed++;
     }
   } catch (error) {

@@ -14,31 +14,21 @@ export default {
   async execute(params) {
     const { existingCode, prompt, anthropic = null } = params;
     
+    if (!anthropic) {
+      throw new Error('AI (Anthropic API) is required for generating ML pipelines. Please provide an API key.');
+    }
+    
     let code;
     
-    // Try to use Anthropic API if available
-    if (anthropic) {
-      try {
-        if (existingCode) {
-          code = await this._optimizeMLPipelineWithAI(existingCode, prompt, anthropic);
-        } else {
-          code = await this._initializeMLPipelineWithAI(prompt, anthropic);
-        }
-      } catch (error) {
-        console.warn('Anthropic API failed, falling back to template generation:', error.message);
-        if (existingCode) {
-          code = this._optimizeMLPipeline(existingCode, prompt);
-        } else {
-          code = this._initializeMLPipeline(prompt);
-        }
-      }
-    } else {
-      // No API key, use template-based generation
+    // Always use Anthropic API for code generation
+    try {
       if (existingCode) {
-        code = this._optimizeMLPipeline(existingCode, prompt);
+        code = await this._optimizeMLPipelineWithAI(existingCode, prompt, anthropic);
       } else {
-        code = this._initializeMLPipeline(prompt);
+        code = await this._initializeMLPipelineWithAI(prompt, anthropic);
       }
+    } catch (error) {
+      throw new Error(`Failed to generate ML pipeline with AI: ${error.message}`);
     }
     
     // Write to file
@@ -138,204 +128,4 @@ Return ONLY the complete optimized Python code, no explanations.`;
     return code.trim();
   },
 
-  /**
-   * Initialize a new ML pipeline (template-based)
-   */
-  _initializeMLPipeline(prompt) {
-    const useCatBoost = prompt.toLowerCase().includes('catboost');
-    const useNeuralNetwork = prompt.toLowerCase().includes('neural') || prompt.toLowerCase().includes('nn');
-    
-    let code = `#!/usr/bin/env python3
-"""
-ML Pipeline for Binance Price Prediction
-Generated based on: ${prompt}
-Works with Binance CSV format: timestamp, open, high, low, close, volume
-"""
-
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error
-`;
-
-    if (useCatBoost) {
-      code += `from catboost import CatBoostRegressor
-`;
-    }
-
-    if (useNeuralNetwork) {
-      code += `from sklearn.neural_network import MLPRegressor
-`;
-    }
-
-    code += `
-def load_binance_data(filepath):
-    """Load and prepare Binance price data from CSV"""
-    df = pd.read_csv(filepath)
-    
-    # Binance format typically has: timestamp (or open_time), open, high, low, close, volume
-    # Convert timestamp to datetime if needed
-    if 'timestamp' in df.columns:
-        df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
-    elif 'open_time' in df.columns:
-        df['open_time'] = pd.to_datetime(df['open_time'], unit='ms')
-    
-    return df
-
-def prepare_features(df):
-    """Prepare features and target from Binance data"""
-    # Assuming the target is the next close price (shifted)
-    # Use numeric columns as features
-    X = df.select_dtypes(include=[np.number]).copy()
-    
-    # Remove target column if it exists, or create target from close
-    if 'close' in X.columns:
-        y = X['close'].shift(-1)  # Predict next close
-        X = X[:-1]  # Remove last row
-        y = y[:-1]  # Remove last NaN
-    else:
-        raise ValueError("No 'close' column found in data")
-    
-    # Drop any remaining NaN values
-    mask = ~(X.isna().any(axis=1) | y.isna())
-    X = X[mask]
-    y = y[mask]
-    
-    return X, y
-
-def train_and_evaluate(X, y):
-    """Train model and calculate MSE"""
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    # Scale features
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-    
-`;
-
-    if (useCatBoost && !useNeuralNetwork) {
-      code += `    # Train CatBoost model (optimized for Binance data)
-    model = CatBoostRegressor(
-        iterations=100,
-        learning_rate=0.1,
-        depth=6,
-        verbose=False
-    )
-    model.fit(X_train_scaled, y_train)
-`;
-    } else if (useNeuralNetwork && !useCatBoost) {
-      code += `    # Train Neural Network model
-    model = MLPRegressor(
-        hidden_layer_sizes=(100, 50),
-        activation='relu',
-        solver='adam',
-        max_iter=500,
-        random_state=42
-    )
-    model.fit(X_train_scaled, y_train)
-`;
-    } else {
-      code += `    # Train CatBoost model (default for Binance data)
-    model = CatBoostRegressor(
-        iterations=100,
-        learning_rate=0.1,
-        depth=6,
-        verbose=False
-    )
-    model.fit(X_train_scaled, y_train)
-`;
-    }
-
-    code += `    
-    # Make predictions
-    y_pred = model.predict(X_test_scaled)
-    
-    # Calculate MSE
-    mse = mean_squared_error(y_test, y_pred)
-    
-    return mse, model
-
-if __name__ == '__main__':
-    # Example usage with Binance data
-    # df = load_binance_data('binance_btcusdt_1h.csv')
-    # X, y = prepare_features(df)
-    # mse, model = train_and_evaluate(X, y)
-    # print(f'MSE: {mse}')
-    
-    # For testing without data
-    print('Pipeline template generated for Binance price data.')
-    print('MSE: 0.0')
-`;
-
-    return code;
-  },
-
-  /**
-   * Optimize existing ML pipeline (template-based)
-   */
-  _optimizeMLPipeline(existingCode, prompt) {
-    let optimizedCode = existingCode;
-    
-    const optimizationHints = prompt.toLowerCase();
-    
-    if (optimizationHints.includes('hyperparameter') || optimizationHints.includes('tune')) {
-      const tuningCode = `
-# Hyperparameter tuning added
-from sklearn.model_selection import GridSearchCV
-
-# Add this to your model training section:
-# param_grid = {
-#     'learning_rate': [0.01, 0.1, 0.3],
-#     'depth': [4, 6, 8],
-#     'iterations': [50, 100, 200]
-# }
-# grid_search = GridSearchCV(model, param_grid, cv=3, scoring='neg_mean_squared_error')
-# grid_search.fit(X_train_scaled, y_train)
-# model = grid_search.best_estimator_
-`;
-      
-      const importEnd = optimizedCode.indexOf('\n\n');
-      if (importEnd !== -1) {
-        optimizedCode = optimizedCode.slice(0, importEnd) + tuningCode + optimizedCode.slice(importEnd);
-      }
-    }
-    
-    if (optimizationHints.includes('feature') || optimizationHints.includes('engineering')) {
-      const featureCode = `
-# Feature engineering added
-from sklearn.preprocessing import PolynomialFeatures
-
-# Add this to your feature preparation:
-# poly = PolynomialFeatures(degree=2, include_bias=False)
-# X_poly = poly.fit_transform(X)
-`;
-      
-      const importEnd = optimizedCode.indexOf('\n\n');
-      if (importEnd !== -1) {
-        optimizedCode = optimizedCode.slice(0, importEnd) + featureCode + optimizedCode.slice(importEnd);
-      }
-    }
-    
-    if (optimizationHints.includes('cross') || optimizationHints.includes('validation')) {
-      const cvCode = `
-# Cross-validation added
-from sklearn.model_selection import cross_val_score
-
-# Add this for cross-validation:
-# cv_scores = cross_val_score(model, X_train_scaled, y_train, 
-#                             cv=5, scoring='neg_mean_squared_error')
-# print(f'CV MSE: {-cv_scores.mean():.4f} (+/- {cv_scores.std() * 2:.4f})')
-`;
-      
-      const importEnd = optimizedCode.indexOf('\n\n');
-      if (importEnd !== -1) {
-        optimizedCode = optimizedCode.slice(0, importEnd) + cvCode + optimizedCode.slice(importEnd);
-      }
-    }
-    
-    return optimizedCode;
-  }
 };
