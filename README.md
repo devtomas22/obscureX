@@ -1,10 +1,25 @@
 # ObscureX AI Agent
 
-A self-contained AI agent with modular tools for cryptocurrency analysis, ML pipeline optimization, and Binance data integration. **Requires Anthropic's Claude AI for all code generation** - the agent uses AI to generate Python code for technical indicators and ML pipelines, with intelligent caching to optimize performance.
+An autonomous, self-directed AI agent with modular tools for cryptocurrency analysis, ML pipeline optimization, and Binance data integration. **Now with full autonomous decision-making capabilities** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention. **Requires Anthropic's Claude AI** for code generation and autonomous decision-making.
 
 ## Features
 
-### 16 Built-in Modular Tools
+### 🤖 NEW: Autonomous Decision-Making (v3.0)
+
+**Fully Autonomous Operation:**
+- **AI makes all decisions** based on current context, memory, and execution results
+- **One AI request per situation** with full context for intelligent decision-making
+- **Memory-based learning** - Agent learns from past attempts and successes
+- **Dynamic execution flow** - AI decides next actions based on available options
+- **MSE-driven optimization** - Automatically adapts strategies based on performance trends
+
+**4 New Autonomy Tools:**
+17. **Analyze Context** - AI analyzes current state and memory to decide best next action
+18. **Get Execution Options** - Discover available execution paths and next possible actions
+19. **Recommend Optimization Strategy** - AI-powered MSE trend analysis and strategy recommendations
+20. **Execute Autonomous Decision** - Complete autonomous decision cycle with execution
+
+### 20 Built-in Modular Tools
 
 **Binance & Cryptocurrency:**
 1. **Download Binance Price History** - Download historical price data from Binance API in CSV format
@@ -30,26 +45,53 @@ A self-contained AI agent with modular tools for cryptocurrency analysis, ML pip
 15. **Retrieve Long-Term Memory** - Retrieve information from long-term memory
 16. **Search Long-Term Memory** - Search through long-term memory
 
+**Autonomous Decision-Making:**
+17. **Analyze Context** - Use AI to analyze current context and decide next action
+18. **Get Execution Options** - Get available execution flow options based on current state
+19. **Recommend Optimization Strategy** - AI-powered strategy recommendations based on MSE trends
+20. **Execute Autonomous Decision** - Execute complete autonomous decision cycle
+
 ### Modular Architecture
 
-Tools are now organized in a modular directory structure:
+Tools are organized in a modular directory structure:
 - **`tools/binance/`** - Binance API integration and data download
 - **`tools/analysis/`** - Cryptocurrency data analysis and technical indicators
 - **`tools/csv/`** - CSV file operations (all Binance CSV format aware)
 - **`tools/ml/`** - Machine learning pipeline management
 - **`tools/memory/`** - Short-term and long-term memory operations
+- **`tools/autonomy/`** - **NEW:** Autonomous decision-making and execution flow tools
 
 ### AI-First Approach
 
 **All code generation now requires AI:**
 - Technical indicator calculations use AI-generated Python code (cached in long-term memory)
 - ML pipeline generation always uses AI (no template fallback)
+- **Autonomous decision-making** uses AI to analyze context and determine next actions
 - Python code is executed via child_process for maximum flexibility
 - Smart caching prevents redundant code generation
 
-### Orchestrator
+### Autonomous Orchestrator (NEW in v3.0)
 
-The agent includes an intelligent orchestrator that:
+The agent now includes a **fully autonomous orchestrator** that makes all decisions without human intervention:
+
+**Autonomous Features:**
+- **AI-Driven Decisions**: Makes one AI request per iteration with full context
+- **Memory Consultation**: Consults short-term and long-term memory for decision-making
+- **Adaptive Strategies**: Automatically adjusts optimization approach based on MSE trends
+- **Execution Flow Control**: AI determines which tools to use and in what order
+- **Self-Optimization**: Learns from failures and successes to improve over time
+
+**How It Works:**
+1. **Context Analysis**: AI analyzes current state, MSE history, and memory
+2. **Option Discovery**: AI identifies available execution paths
+3. **Strategy Selection**: AI recommends optimization strategy based on trends
+4. **Autonomous Execution**: AI decides and executes the next action
+5. **Memory Storage**: Results stored for future decision-making
+6. **Iteration**: Repeats until objective achieved
+
+### Traditional Orchestrator
+
+The agent also includes the traditional orchestrator that:
 - Runs optimization loops automatically
 - Generates and tests ML pipelines iteratively for Binance price prediction
 - Uses AI to determine optimization strategies
@@ -98,17 +140,27 @@ Without an API key, only basic tools like memory management, CSV operations (lis
 ### Command Line Interface
 
 ```bash
-# List all available tools
+# List all available tools (now 20 tools including autonomy)
 node agent.js list-tools
 
-# Run the orchestrator (optimization loop) with Binance data
+# Run the AUTONOMOUS agent (NEW in v3.0) - AI makes all decisions
+node autonomous_agent.js <dataFile> [threshold] [maxIterations]
+
+# Example: Fully autonomous optimization
+node autonomous_agent.js binance_btcusdt_1h.csv 0.05 30
+
+# Or use npm scripts
+npm run autonomous binance_btcusdt_1h.csv 0.05 30
+
+# Run the traditional orchestrator (optimization loop) with Binance data
 node agent.js optimize [dataFile] [threshold] [maxIterations]
 
-# Example: Optimize Binance data until MSE < 0.05, max 30 iterations
+# Example: Traditional optimization
 node agent.js optimize binance_btcusdt_1h.csv 0.05 30
 
-# Run memory and orchestrator demos
-npm run demo
+# Run demos
+npm run demo              # Memory and traditional orchestrator demo
+npm run autonomous-demo   # Autonomous decision-making demo
 ```
 
 ### Programmatic Usage
@@ -160,7 +212,73 @@ const result = await agent.executeTool('listTechnicalIndicators', {
 });
 ```
 
-#### Using the Orchestrator for Binance Price Prediction
+#### Using the Autonomous Agent (NEW in v3.0)
+
+```javascript
+import { AutonomousOrchestrator } from './autonomous_agent.js';
+import ObscureXAgent from './agent.js';
+
+const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+const orchestrator = new AutonomousOrchestrator(agent);
+
+// Run fully autonomous optimization
+// AI makes ALL decisions based on context and memory
+const result = await orchestrator.runAutonomous({
+  dataFile: 'binance_btcusdt_1h.csv',
+  objective: 'Optimize ML pipeline for cryptocurrency price prediction to achieve lowest MSE',
+  mseThreshold: 0.05,
+  maxIterations: 50,
+  verbose: true
+});
+
+console.log(`Objective achieved: ${result.objectiveAchieved}`);
+console.log(`Best MSE: ${result.bestMSE}`);
+console.log(`Iterations: ${result.iterations}`);
+```
+
+#### Using Autonomous Decision-Making Tools
+
+```javascript
+import ObscureXAgent from './agent.js';
+
+const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+
+// 1. Analyze context and get AI decision
+const contextAnalysis = await agent.executeTool('analyzeContext', {
+  currentState: {
+    phase: 'optimization',
+    iteration: 5,
+    mse: 0.15,
+    threshold: 0.1
+  },
+  objective: 'Achieve MSE below 0.1 for cryptocurrency price prediction',
+  anthropic: agent.anthropic
+});
+
+console.log('AI Decision:', contextAnalysis.result.decision);
+
+// 2. Get available execution options
+const options = await agent.executeTool('getExecutionOptions', {
+  currentPhase: 'optimization',
+  currentState: { mse: 0.15, threshold: 0.1 },
+  anthropic: agent.anthropic
+});
+
+console.log('Available actions:', options.result.options);
+
+// 3. Get optimization strategy recommendation
+const strategy = await agent.executeTool('recommendOptimizationStrategy', {
+  mseHistory: [0.25, 0.22, 0.20, 0.18, 0.15],
+  currentMSE: 0.15,
+  targetMSE: 0.1,
+  iterationNumber: 5,
+  anthropic: agent.anthropic
+});
+
+console.log('Recommended strategy:', strategy.result.recommendation);
+```
+
+#### Using the Traditional Orchestrator for Binance Price Prediction
 
 ```javascript
 import ObscureXAgent from './agent.js';
@@ -404,7 +522,145 @@ await agent.executeTool('searchLongTermMemory', {
 });
 ```
 
+### Autonomous Decision-Making Tools (NEW in v3.0)
+
+#### 17. Analyze Context
+```javascript
+// AI analyzes current state and memory to decide next action
+const result = await agent.executeTool('analyzeContext', {
+  currentState: {
+    phase: 'optimization',
+    iteration: 5,
+    mse: 0.15,
+    threshold: 0.1
+  },
+  objective: 'Achieve MSE below 0.1 for cryptocurrency price prediction',
+  anthropic: agent.anthropic
+});
+
+// Returns:
+// {
+//   decision: {
+//     action: 'hyperparameter_tuning',
+//     reasoning: 'MSE is improving but needs further optimization',
+//     details: 'Apply GridSearchCV with cross-validation',
+//     confidence: 'High'
+//   },
+//   contextUsed: {
+//     shortTermEntries: 10,
+//     longTermEntries: 5
+//   }
+// }
+```
+
+#### 18. Get Execution Options
+```javascript
+// Get available execution flow options for current phase
+const result = await agent.executeTool('getExecutionOptions', {
+  currentPhase: 'optimization',
+  currentState: { mse: 0.15, threshold: 0.1 },
+  anthropic: agent.anthropic
+});
+
+// Returns available actions for the current phase:
+// {
+//   phase: 'optimization',
+//   options: [
+//     {
+//       action: 'continue_optimization',
+//       description: 'Continue with current optimization strategy',
+//       tools: ['generateMLPipeline', 'testMLPipeline']
+//     },
+//     {
+//       action: 'hyperparameter_tuning',
+//       description: 'Apply hyperparameter tuning to current model',
+//       optimization: 'Add GridSearchCV or RandomizedSearchCV'
+//     },
+//     // ... more options
+//   ],
+//   aiRecommendations: [
+//     { action: 'hyperparameter_tuning', priority: 1, reasoning: '...' }
+//   ]
+// }
+```
+
+#### 19. Recommend Optimization Strategy
+```javascript
+// Get AI-powered optimization strategy based on MSE trends
+const result = await agent.executeTool('recommendOptimizationStrategy', {
+  mseHistory: [0.25, 0.22, 0.20, 0.18, 0.15],
+  currentMSE: 0.15,
+  targetMSE: 0.1,
+  iterationNumber: 5,
+  anthropic: agent.anthropic
+});
+
+// Returns:
+// {
+//   recommendation: {
+//     strategy: 'Hyperparameter tuning',
+//     technique: 'Apply GridSearchCV with 5-fold cross-validation',
+//     expectedImpact: 'Moderate to significant improvement expected',
+//     alternativeStrategy: 'Try ensemble methods if tuning fails',
+//     tryDifferentApproach: false
+//   },
+//   trends: {
+//     trend: 'improving',
+//     improvement: true,
+//     stagnant: false,
+//     avgImprovement: 0.025
+//   }
+// }
+```
+
+#### 20. Execute Autonomous Decision
+```javascript
+// Execute a complete autonomous decision cycle
+const result = await agent.executeTool('executeAutonomousDecision', {
+  currentState: {
+    phase: 'optimization',
+    iteration: 5,
+    mse: 0.15,
+    threshold: 0.1,
+    mseHistory: [0.25, 0.22, 0.20, 0.18, 0.15]
+  },
+  objective: 'Optimize ML pipeline for cryptocurrency price prediction',
+  dataFile: 'binance_btcusdt_1h.csv',
+  anthropic: agent.anthropic
+});
+
+// Executes:
+// 1. Context analysis
+// 2. Execution options discovery
+// 3. Strategy recommendation (if in optimization phase)
+// 4. Decision execution
+// 5. Memory storage
+// Returns execution result with next state
+```
+
 ## Examples
+
+### Autonomous Agent Example (NEW)
+
+```javascript
+import { AutonomousOrchestrator } from './autonomous_agent.js';
+import ObscureXAgent from './agent.js';
+
+const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+const orchestrator = new AutonomousOrchestrator(agent);
+
+// Let AI make all decisions autonomously
+const result = await orchestrator.runAutonomous({
+  dataFile: 'binance_btcusdt_1h.csv',
+  objective: 'Optimize ML pipeline for cryptocurrency price prediction to achieve lowest MSE',
+  mseThreshold: 0.05,
+  maxIterations: 30,
+  verbose: true
+});
+
+console.log('Objective achieved:', result.objectiveAchieved);
+console.log('Best MSE:', result.bestMSE);
+```
 
 ### Quick Start with Binance Data
 
@@ -434,7 +690,16 @@ await agent.executeTool('calculateCryptoIndicators', {
   indicators: ['RSI', 'MACD', 'SMA']
 });
 
-// Train ML model
+// Option 1: Use autonomous agent (AI makes all decisions)
+import { AutonomousOrchestrator } from './autonomous_agent.js';
+const orchestrator = new AutonomousOrchestrator(agent);
+await orchestrator.runAutonomous({
+  dataFile: 'btc_data.csv',
+  mseThreshold: 0.05,
+  maxIterations: 30
+});
+
+// Option 2: Use traditional orchestrator
 await agent.runOptimizationLoop({
   dataFile: 'btc_data.csv',
   mseThreshold: 0.05,
@@ -442,50 +707,69 @@ await agent.runOptimizationLoop({
 });
 ```
 
-See `examples.js` for basic tool usage and `orchestrator_demo.js` for memory and orchestrator examples.
+See `examples.js` for basic tool usage, `orchestrator_demo.js` for memory and traditional orchestrator examples, and `autonomous_demo.js` for autonomous decision-making features.
 
 ```bash
 # Run basic examples
 node examples.js
 
-# Run orchestrator demo
+# Run traditional orchestrator demo
 npm run demo
 
-# Test crypto tools
-node test_crypto_tools.js
+# Run autonomous agent demo (NEW)
+npm run autonomous-demo
+
+# Run fully autonomous optimization
+node autonomous_agent.js sample_data.csv 0.05 30
+```
 ```
 
 ## Architecture
 
 - **ObscureXAgent Class**: Main agent with modular tool loading
-- **Anthropic Integration**: Uses Claude for intelligent code generation
+- **Anthropic Integration**: Uses Claude for intelligent code generation and autonomous decision-making
 - **Memory System**: Dual-layer (short-term + long-term) JSON storage
-- **Orchestrator**: Automated optimization loop with learning for Binance data
-- **Modular Tools**: 16 tools organized in 5 categories
+- **Autonomous Orchestrator**: NEW - Self-directed optimization with AI-driven decisions
+- **Traditional Orchestrator**: Automated optimization loop with learning for Binance data
+- **Modular Tools**: 20 tools organized in 6 categories
   - `tools/binance/` - Binance API integration (1 tool)
   - `tools/analysis/` - Crypto analysis and indicators (2 tools)
   - `tools/csv/` - CSV operations (3 tools)
   - `tools/ml/` - ML pipeline management (4 tools)
   - `tools/memory/` - Memory operations (6 tools)
+  - `tools/autonomy/` - **NEW:** Autonomous decision-making (4 tools)
 
 ## Requirements
 
 - Node.js 20.x or higher
 - Python 3.x with pip
 - Python packages: numpy, pandas, scikit-learn, catboost (optional)
-- **Anthropic API key (REQUIRED for code generation features)**
+- **Anthropic API key (REQUIRED for code generation and autonomous features)**
 - Internet connection (for Binance API data download)
 
 ## API Key
 
-The agent **requires** an Anthropic API key for AI-powered code generation features. Get your key at: https://console.anthropic.com/
+The agent **requires** an Anthropic API key for AI-powered features. Get your key at: https://console.anthropic.com/
 
 **Without an API key:**
 - Technical indicator calculations will fail (requires AI)
 - ML pipeline generation will fail (requires AI)
+- **Autonomous decision-making will fail (requires AI)**
 - Basic tools (memory, CSV list/add/remove, Python modules) will still work
 
-## New in Version 2.2 (AI-First Update)
+## New in Version 3.0 (Autonomous AI Update)
+
+- 🤖 **FULLY AUTONOMOUS AGENT** - AI makes all decisions based on context and memory
+- 🧠 **Context-aware decision-making** - One AI request per situation with full context
+- 🎯 **Execution flow control** - AI decides which tools to use and when
+- 📊 **MSE-driven optimization** - Adaptive strategies based on performance trends
+- 🔄 **Memory-based learning** - Agent learns from past attempts and successes
+- 🛠️ **4 new autonomy tools** - analyzeContext, getExecutionOptions, recommendOptimizationStrategy, executeAutonomousDecision
+- 📈 **Self-optimization** - Automatically adjusts approach based on results
+
+## Previous Updates
+
+### Version 2.2 (AI-First Update)
 
 - ✨ **AI-first code generation** - All Python code now generated by AI
 - 🧠 **Intelligent caching** - Technical indicator code cached in long-term memory
@@ -493,7 +777,7 @@ The agent **requires** an Anthropic API key for AI-powered code generation featu
 - 🚫 **No template fallback** - ML pipeline generation requires AI (more reliable)
 - 🐍 **Python execution** - All generated code runs via child_process
 
-## Previous Updates (Version 2.1)
+### Version 2.1
 
 - ✨ **Modular tool architecture** - Tools organized in separate files by category
 - 🔄 **Binance integration** - Download and analyze cryptocurrency data
