@@ -8,7 +8,7 @@
     "start": "node agent.js",
     "demo": "node orchestrator_demo.js",
     "optimize": "node agent.js optimize",
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "node test_validation.js"
   },
   "keywords": [
     "ai",
