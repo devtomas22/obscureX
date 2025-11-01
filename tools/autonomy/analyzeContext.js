@@ -106,10 +106,10 @@ CURRENT STATE:
 ${JSON.stringify(contextSummary.currentState, null, 2)}
 
 RECENT ACTIVITY (last 10 entries):
-${JSON.stringify(contextSummary.recentActivity, null, 2)}
+${this._summarizeActivity(contextSummary.recentActivity)}
 
 HISTORICAL KNOWLEDGE:
-${JSON.stringify(contextSummary.historicalContext, null, 2)}
+${this._summarizeActivity(contextSummary.historicalContext)}
 
 Based on this context, what should be the next action? Provide:
 1. Action: (e.g., "optimize_pipeline", "add_features", "try_different_model", "continue_current_approach")
@@ -155,5 +155,25 @@ Format your response as JSON.`;
         confidence: 'Medium'
       };
     }
+  },
+  
+  /**
+   * Summarize activity to avoid token limits
+   */
+  _summarizeActivity(activities) {
+    if (!activities || activities.length === 0) {
+      return 'No activity';
+    }
+    
+    return activities.map(a => {
+      const val = a.value || {};
+      const key = a.key || 'unknown';
+      
+      // Extract key information only
+      if (val.mse !== undefined) {
+        return `${key}: MSE=${val.mse}${val.iteration ? `, iter=${val.iteration}` : ''}`;
+      }
+      return `${key}: ${JSON.stringify(val).substring(0, 100)}`;
+    }).join('\n');
   }
 };

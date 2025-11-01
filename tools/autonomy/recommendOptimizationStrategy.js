@@ -119,7 +119,7 @@ MSE TRENDS:
 - Recent MSEs: ${JSON.stringify(analysisContext.trends.recentMSEs)}
 
 RECENT ATTEMPTS:
-${JSON.stringify(analysisContext.recentAttempts.slice(-5), null, 2)}
+${this._summarizeAttempts(analysisContext.recentAttempts.slice(-5))}
 
 Based on this analysis, recommend:
 1. Primary strategy to apply
@@ -198,5 +198,19 @@ Format response as JSON with keys: strategy, technique, expectedImpact, alternat
       alternativeStrategy: 'Try cross-validation with different model',
       tryDifferentApproach: trends.stagnant || !trends.improvement
     };
+  },
+  
+  /**
+   * Summarize attempts to avoid token limits
+   */
+  _summarizeAttempts(attempts) {
+    if (!attempts || attempts.length === 0) {
+      return 'No recent attempts';
+    }
+    
+    return attempts.map((a, idx) => {
+      const val = a.value || {};
+      return `Attempt ${idx + 1}: MSE=${val.mse || 'N/A'}${val.iteration ? `, iter=${val.iteration}` : ''}`;
+    }).join('\n');
   }
 };

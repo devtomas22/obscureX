@@ -181,13 +181,12 @@ class AutonomousOrchestrator {
       anthropic: this.agent.anthropic
     });
 
-    if (verbose) {
+    // verbose is not defined in this scope - remove verbose logging
+    if (executionOptions.success && executionOptions.result.options) {
       console.log(`📑 Available options in ${currentState.phase} phase:`);
-      if (executionOptions.success && executionOptions.result.options) {
-        executionOptions.result.options.slice(0, 3).forEach((opt, idx) => {
-          console.log(`   ${idx + 1}. ${opt.action}: ${opt.description}`);
-        });
-      }
+      executionOptions.result.options.slice(0, 3).forEach((opt, idx) => {
+        console.log(`   ${idx + 1}. ${opt.action}: ${opt.description}`);
+      });
       console.log();
     }
 

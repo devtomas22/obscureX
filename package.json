@@ -9,7 +9,7 @@
     "demo": "node orchestrator_demo.js",
     "autonomous-demo": "node autonomous_demo.js",
     "optimize": "node agent.js optimize",
-    "autonomous": "node autonomous_agent.js",
+    "autonomous": "node autonomous_agent.js --",
     "test": "node test_validation.js"
   },
   "keywords": [
