@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
-import { execSync } from 'child_process';
+import { execSync, execFileSync } from 'child_process';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { randomBytes } from 'crypto';
@@ -128,7 +128,8 @@ Return ONLY the Python code, no explanations or markdown.`;
     try {
       writeFileSync(tempFile, pythonCode, 'utf-8');
       
-      const output = execSync(`python3 ${tempFile} ${filename}`, { 
+      // Use execFileSync to prevent command injection
+      const output = execFileSync('python3', [tempFile, filename], { 
         encoding: 'utf-8',
         timeout: 300000,
         cwd: process.cwd()

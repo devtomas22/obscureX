@@ -1,6 +1,6 @@
 {
   "name": "obscurex-agent",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Self-contained AI agent with Binance integration, modular tools, memory management, and ML pipeline optimization",
   "main": "agent.js",
   "type": "module",
