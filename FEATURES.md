@@ -1,34 +1,94 @@
 # ObscureX Agent - Feature Summary
 
 ## Overview
-A self-contained AI agent built in Node.js with orchestration capabilities, dual-layer memory management, and ML pipeline optimization powered by Anthropic's Claude AI.
+A self-contained AI agent built in Node.js with modular tool architecture, Binance cryptocurrency integration, orchestration capabilities, dual-layer memory management, and ML pipeline optimization powered by Anthropic's Claude AI.
 
 ## Complete Feature Set
 
-### 13 Tools Implemented
+### 16 Modular Tools Implemented
 
-#### CSV & Technical Indicators (Tools 1-3)
-1. **listTechnicalIndicators** - Lists technical indicators in CSV files
-2. **addTechnicalIndicator** - Adds new indicator columns to CSVs
-3. **removeTechnicalIndicator** - Removes indicator columns from CSVs
+#### Binance & Cryptocurrency Analysis (Tools 1-3)
+1. **downloadBinancePriceHistory** - Downloads historical crypto price data from Binance API
+2. **analyzeBinanceData** - Provides comprehensive statistical analysis (volatility, trends, volume)
+3. **calculateCryptoIndicators** - Calculates technical indicators (RSI, MACD, Bollinger Bands, SMA, EMA)
 
-#### ML Pipeline Management (Tools 4-7)
-4. **testMLPipeline** - Executes Python pipelines and extracts MSE values
-5. **generateMLPipeline** - AI-powered pipeline generation with CatBoost/Neural Networks
-6. **listPythonModules** - Lists all installed Python packages
-7. **installPythonModule** - Installs Python packages via pip
+#### CSV & Technical Indicators (Tools 4-6)
+4. **listTechnicalIndicators** - Lists technical indicators in CSV files (Binance-aware)
+5. **addTechnicalIndicator** - Adds new indicator columns to CSVs
+6. **removeTechnicalIndicator** - Removes indicator columns from CSVs
 
-#### Memory Management (Tools 8-13)
-8. **storeMemory** - Stores data in short-term (session) memory
-9. **retrieveMemory** - Retrieves data from short-term memory
-10. **searchMemory** - Searches through short-term memory
-11. **storeLongTermMemory** - Stores data persistently across sessions
-12. **retrieveLongTermMemory** - Retrieves data from long-term memory
-13. **searchLongTermMemory** - Searches through long-term memory
+#### ML Pipeline Management (Tools 7-10)
+7. **testMLPipeline** - Executes Python pipelines and extracts MSE values (optimized for Binance data)
+8. **generateMLPipeline** - AI-powered pipeline generation with CatBoost/Neural Networks (Binance-optimized)
+9. **listPythonModules** - Lists all installed Python packages
+10. **installPythonModule** - Installs Python packages via pip
+
+#### Memory Management (Tools 11-16)
+11. **storeMemory** - Stores data in short-term (session) memory
+12. **retrieveMemory** - Retrieves data from short-term memory
+13. **searchMemory** - Searches through short-term memory
+14. **storeLongTermMemory** - Stores data persistently across sessions
+15. **retrieveLongTermMemory** - Retrieves data from long-term memory
+16. **searchLongTermMemory** - Searches through long-term memory
+
+### Modular Architecture
+
+**Tool Organization:**
+```
+tools/
+├── binance/          # Binance API integration (1 tool)
+│   └── downloadBinancePriceHistory.js
+├── analysis/         # Crypto analysis (2 tools)
+│   ├── analyzeBinanceData.js
+│   └── calculateCryptoIndicators.js
+├── csv/              # CSV operations (3 tools)
+│   ├── listTechnicalIndicators.js
+│   ├── addTechnicalIndicator.js
+│   └── removeTechnicalIndicator.js
+├── ml/               # ML pipeline management (4 tools)
+│   ├── testMLPipeline.js
+│   ├── generateMLPipeline.js
+│   ├── listPythonModules.js
+│   └── installPythonModule.js
+├── memory/           # Memory operations (6 tools)
+│   ├── storeMemory.js
+│   ├── retrieveMemory.js
+│   ├── searchMemory.js
+│   ├── storeLongTermMemory.js
+│   ├── retrieveLongTermMemory.js
+│   └── searchLongTermMemory.js
+└── toolLoader.js     # Dynamic tool loading system
+```
+
+### Binance Integration
+
+**Supported Features:**
+- Direct API access for downloading historical price data
+- Support for all major trading pairs (BTCUSDT, ETHUSDT, etc.)
+- Multiple timeframes (1m, 5m, 15m, 1h, 4h, 1d, etc.)
+- Automatic CSV formatting in Binance structure
+- Understanding of Binance CSV columns:
+  - timestamp, open, high, low, close, volume
+  - close_time, quote_volume, trades
+  - taker_buy_volume, taker_buy_quote_volume
+
+**Analysis Capabilities:**
+- Price statistics (min, max, average, change %)
+- Volume analysis (total, average, min, max)
+- Volatility metrics (standard deviation, returns)
+- Trend identification (bullish/bearish/neutral)
+- Moving average comparisons (SMA20, SMA50)
+
+**Technical Indicators:**
+- RSI (Relative Strength Index)
+- MACD (Moving Average Convergence Divergence)
+- Bollinger Bands (upper, middle, lower)
+- SMA (Simple Moving Average)
+- EMA (Exponential Moving Average)
 
 ### Orchestrator System
 
-The orchestrator provides autonomous optimization:
+The orchestrator provides autonomous optimization for cryptocurrency price prediction:
 
 **Key Features:**
 - Iterative ML pipeline optimization loop
@@ -37,10 +97,11 @@ The orchestrator provides autonomous optimization:
 - Best model persistence in long-term memory
 - Configurable MSE threshold and iteration limits
 - Learning from previous attempts
+- Optimized for Binance price data
 
 **Process Flow:**
 1. Load previous best from long-term memory (if exists)
-2. Generate/optimize pipeline using AI
+2. Generate/optimize pipeline using AI (Binance-aware)
 3. Test pipeline and extract MSE
 4. Store results in short-term memory
 5. Update best if improved and persist to long-term memory
@@ -132,13 +193,39 @@ agent.longTermMemory  // Long-term memory object
 
 ```
 obscureX/
-├── agent.js                      # Main agent implementation (1200+ lines)
+├── agent.js                      # Main agent with dynamic tool loading
+├── tools/                        # Modular tool directory
+│   ├── binance/                  # Binance integration
+│   │   └── downloadBinancePriceHistory.js
+│   ├── analysis/                 # Crypto analysis tools
+│   │   ├── analyzeBinanceData.js
+│   │   └── calculateCryptoIndicators.js
+│   ├── csv/                      # CSV operations
+│   │   ├── listTechnicalIndicators.js
+│   │   ├── addTechnicalIndicator.js
+│   │   └── removeTechnicalIndicator.js
+│   ├── ml/                       # ML pipeline tools
+│   │   ├── testMLPipeline.js
+│   │   ├── generateMLPipeline.js
+│   │   ├── listPythonModules.js
+│   │   └── installPythonModule.js
+│   ├── memory/                   # Memory operations
+│   │   ├── storeMemory.js
+│   │   ├── retrieveMemory.js
+│   │   ├── searchMemory.js
+│   │   ├── storeLongTermMemory.js
+│   │   ├── retrieveLongTermMemory.js
+│   │   └── searchLongTermMemory.js
+│   └── toolLoader.js             # Dynamic tool loader
 ├── examples.js                   # Basic tool usage examples
 ├── orchestrator_demo.js          # Memory and orchestrator demos
+├── binance_example.js            # Binance integration example
 ├── test_validation.js            # Comprehensive test suite
+├── sample_binance_data.csv       # Sample data for testing
 ├── package.json                  # Project configuration
 ├── .gitignore                    # Excludes memory files, generated code
 ├── README.md                     # Full documentation
+├── FEATURES.md                   # This file
 ├── agent_memory.json            # Short-term memory (gitignored)
 └── agent_longterm_memory.json   # Long-term memory (gitignored)
 ```
@@ -146,15 +233,20 @@ obscureX/
 ## Testing
 
 **Validation Suite:** 7 comprehensive tests
-- ✓ Tool availability (13 tools)
+- ✓ Tool availability (16 tools)
 - ✓ CSV operations (add, list, remove)
 - ✓ Short-term memory (store, retrieve, search)
 - ✓ Long-term memory (store, retrieve, search)
 - ✓ Python module operations
-- ✓ ML pipeline generation
+- ✓ ML pipeline generation (Binance-optimized)
 - ✓ ML pipeline testing with MSE extraction
 
 All tests passing with 100% success rate.
+
+**Examples:**
+- `examples.js` - Basic tool usage examples
+- `orchestrator_demo.js` - Memory and orchestrator demos
+- `binance_example.js` - Comprehensive Binance integration demo
 
 ## Dependencies
 
@@ -164,46 +256,57 @@ All tests passing with 100% success rate.
 **Python Requirements:**
 - Python 3.x
 - pip
-- scikit-learn (for ML pipelines)
+- numpy, pandas, scikit-learn (for ML pipelines)
 - Optional: catboost, tensorflow/pytorch for generated pipelines
 
 ## Key Design Decisions
 
-1. **Single File Agent**: Main logic in one file for clarity and simplicity
-2. **No Agent Framework**: Built from scratch with only Anthropic SDK dependency
-3. **Dual Memory**: Separate short-term and long-term for different use cases
-4. **JSON Persistence**: Simple, human-readable storage format
-5. **AI-First**: Leverage Claude for intelligent code generation
-6. **Graceful Degradation**: Falls back to templates when AI unavailable
-7. **CLI + API**: Both command-line and programmatic interfaces
-8. **Comprehensive Logging**: Verbose output for transparency
+1. **Modular Architecture**: Tools separated into category-based directories
+2. **Dynamic Loading**: Tools loaded at runtime for extensibility
+3. **Binance-First**: All CSV tools understand Binance data format
+4. **No Agent Framework**: Built from scratch with only Anthropic SDK dependency
+5. **Dual Memory**: Separate short-term and long-term for different use cases
+6. **JSON Persistence**: Simple, human-readable storage format
+7. **AI-First**: Leverage Claude for intelligent code generation
+8. **Graceful Degradation**: Falls back to templates when AI unavailable
+9. **CLI + API**: Both command-line and programmatic interfaces
+10. **Comprehensive Logging**: Verbose output for transparency
 
 ## Use Cases
 
-1. **Automated ML Optimization**: Continuous improvement of price prediction models
-2. **Memory-Augmented Workflows**: Tools that remember context across sessions
-3. **CSV Data Management**: Quick technical indicator manipulation
-4. **Python Environment Management**: Module installation and tracking
-5. **Code Generation**: AI-powered ML pipeline creation
-6. **Research Logging**: Track experiments in structured memory
+1. **Cryptocurrency Price Prediction**: Download Binance data and train ML models
+2. **Technical Analysis**: Calculate and analyze crypto indicators
+3. **Automated ML Optimization**: Continuous improvement of prediction models
+4. **Memory-Augmented Workflows**: Tools that remember context across sessions
+5. **Crypto Data Management**: Quick technical indicator manipulation
+6. **Python Environment Management**: Module installation and tracking
+7. **Code Generation**: AI-powered ML pipeline creation for crypto data
+8. **Trading Research**: Track experiments in structured memory
 
 ## Future Enhancements (Not Implemented)
 
-- Multi-objective optimization (MSE + other metrics)
+- Multi-exchange support (Coinbase, Kraken, etc.)
+- Real-time data streaming
+- Backtesting framework
+- Multi-objective optimization (MSE + Sharpe ratio, etc.)
 - Parallel pipeline testing
-- Visualization of optimization progress
+- Visualization of optimization progress and price charts
 - Export memory to different formats
 - Memory compression/archival
 - Distributed orchestration
 - More sophisticated learning from history
+- Portfolio optimization tools
 
 ## Conclusion
 
-ObscureX is a complete, production-ready AI agent demonstrating:
+ObscureX v2.1 is a production-ready AI agent demonstrating:
+- Modular, extensible architecture
+- Binance cryptocurrency integration
+- Advanced technical analysis capabilities
 - Autonomous orchestration
 - Intelligent memory management
 - AI-powered code generation
 - Robust tool execution
 - Comprehensive testing
 
-The agent successfully implements all required features and goes beyond with advanced capabilities like dual-layer memory and AI-driven optimization strategies.
+The agent successfully implements all required features and goes beyond with advanced capabilities like dual-layer memory, modular tool system, and crypto-specific optimizations.
