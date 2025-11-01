@@ -1,39 +1,65 @@
 # ObscureX AI Agent
 
-A self-contained AI agent with orchestrator, memory management, and ML pipeline optimization. Uses Anthropic's Claude AI for intelligent code generation and optimization.
+A self-contained AI agent with modular tools for cryptocurrency analysis, ML pipeline optimization, and Binance data integration. Uses Anthropic's Claude AI for intelligent code generation and optimization.
 
 ## Features
 
-### 13 Built-in Tools
+### 16 Built-in Modular Tools
+
+**Binance & Cryptocurrency:**
+1. **Download Binance Price History** - Download historical price data from Binance API in CSV format
+2. **Analyze Binance Data** - Statistical analysis including volatility, trends, and volume analysis
+3. **Calculate Crypto Indicators** - Calculate technical indicators (RSI, MACD, Bollinger Bands, SMA, EMA)
 
 **CSV & Technical Indicators:**
-1. **List Technical Indicators** - List all technical indicators in a CSV file
-2. **Add Technical Indicator** - Add a new technical indicator column to a CSV
-3. **Remove Technical Indicator** - Remove a technical indicator from a CSV
+4. **List Technical Indicators** - List all technical indicators in a CSV file (Binance-aware)
+5. **Add Technical Indicator** - Add a new technical indicator column to a CSV
+6. **Remove Technical Indicator** - Remove a technical indicator from a CSV
 
 **ML Pipeline Management:**
-4. **Test ML Pipeline** - Execute a Python ML pipeline and return MSE value
-5. **Generate ML Pipeline** - Create ML pipeline code using CatBoost and/or Neural Networks (AI-powered)
-6. **List Python Modules** - List all installed Python packages
-7. **Install Python Module** - Install a Python package using pip
+7. **Test ML Pipeline** - Execute a Python ML pipeline and return MSE value (optimized for Binance data)
+8. **Generate ML Pipeline** - Create ML pipeline code using CatBoost and/or Neural Networks (AI-powered, Binance-optimized)
+9. **List Python Modules** - List all installed Python packages
+10. **Install Python Module** - Install a Python package using pip
 
 **Memory Management:**
-8. **Store Memory** - Store information in short-term memory (session-based)
-9. **Retrieve Memory** - Retrieve information from short-term memory
-10. **Search Memory** - Search through short-term memory
-11. **Store Long-Term Memory** - Store information persistently across sessions
-12. **Retrieve Long-Term Memory** - Retrieve information from long-term memory
-13. **Search Long-Term Memory** - Search through long-term memory
+11. **Store Memory** - Store information in short-term memory (session-based)
+12. **Retrieve Memory** - Retrieve information from short-term memory
+13. **Search Memory** - Search through short-term memory
+14. **Store Long-Term Memory** - Store information persistently across sessions
+15. **Retrieve Long-Term Memory** - Retrieve information from long-term memory
+16. **Search Long-Term Memory** - Search through long-term memory
+
+### Modular Architecture
+
+Tools are now organized in a modular directory structure:
+- **`tools/binance/`** - Binance API integration and data download
+- **`tools/analysis/`** - Cryptocurrency data analysis and technical indicators
+- **`tools/csv/`** - CSV file operations (all Binance CSV format aware)
+- **`tools/ml/`** - Machine learning pipeline management
+- **`tools/memory/`** - Short-term and long-term memory operations
 
 ### Orchestrator
 
 The agent includes an intelligent orchestrator that:
 - Runs optimization loops automatically
-- Generates and tests ML pipelines iteratively
+- Generates and tests ML pipelines iteratively for Binance price prediction
 - Uses AI to determine optimization strategies
 - Stores results in memory (short-term and long-term)
 - Continues until MSE threshold is met or max iterations reached
 - Learns from previous attempts
+
+### Binance Data Support
+
+All tools understand the Binance CSV format:
+- `timestamp` - Open time in milliseconds
+- `open`, `high`, `low`, `close` - OHLC price data
+- `volume` - Base asset volume
+- `close_time` - Close time in milliseconds
+- `quote_volume` - Quote asset volume
+- `trades` - Number of trades
+- `taker_buy_volume` - Taker buy base asset volume
+- `taker_buy_quote_volume` - Taker buy quote asset volume
 
 ## Installation
 
@@ -65,17 +91,51 @@ const agent = new ObscureXAgent('your-api-key-here');
 # List all available tools
 node agent.js list-tools
 
-# Run the orchestrator (optimization loop)
+# Run the orchestrator (optimization loop) with Binance data
 node agent.js optimize [dataFile] [threshold] [maxIterations]
 
-# Example: Optimize until MSE < 0.05, max 30 iterations
-node agent.js optimize sample_data.csv 0.05 30
+# Example: Optimize Binance data until MSE < 0.05, max 30 iterations
+node agent.js optimize binance_btcusdt_1h.csv 0.05 30
 
 # Run memory and orchestrator demos
 npm run demo
 ```
 
 ### Programmatic Usage
+
+#### Working with Binance Data
+
+```javascript
+import ObscureXAgent from './agent.js';
+
+const agent = new ObscureXAgent();
+
+// 1. Download Binance price data
+await agent.executeTool('downloadBinancePriceHistory', {
+  symbol: 'BTCUSDT',
+  interval: '1h',      // 1m, 5m, 15m, 1h, 4h, 1d, etc.
+  limit: 1000,         // Max 1000 per request
+  outputFile: 'binance_btcusdt_1h.csv'
+});
+
+// 2. Analyze the downloaded data
+const analysis = await agent.executeTool('analyzeBinanceData', {
+  filename: 'binance_btcusdt_1h.csv'
+});
+console.log('Price analysis:', analysis.result);
+
+// 3. Calculate technical indicators
+await agent.executeTool('calculateCryptoIndicators', {
+  filename: 'binance_btcusdt_1h.csv',
+  indicators: ['RSI', 'MACD', 'BB', 'SMA', 'EMA']
+});
+
+// 4. List all indicators in the CSV
+const indicators = await agent.executeTool('listTechnicalIndicators', {
+  filename: 'binance_btcusdt_1h.csv'
+});
+console.log('Technical indicators:', indicators.result);
+```
 
 #### Basic Tool Execution
 
@@ -90,19 +150,19 @@ const result = await agent.executeTool('listTechnicalIndicators', {
 });
 ```
 
-#### Using the Orchestrator
+#### Using the Orchestrator for Binance Price Prediction
 
 ```javascript
 import ObscureXAgent from './agent.js';
 
 const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
 
-// Run optimization loop
+// Run optimization loop with Binance data
 const result = await agent.runOptimizationLoop({
-  dataFile: 'price_data.csv',
+  dataFile: 'binance_btcusdt_1h.csv',
   mseThreshold: 0.05,
   maxIterations: 50,
-  initialPrompt: 'Create a price prediction pipeline using CatBoost',
+  initialPrompt: 'Create a price prediction pipeline for Binance data using CatBoost',
   verbose: true
 });
 
@@ -177,17 +237,60 @@ The orchestrator automatically applies various strategies:
 
 ## Tool Documentation
 
-### CSV Tools
+### Binance & Cryptocurrency Tools
 
-#### 1. List Technical Indicators
+#### 1. Download Binance Price History
+```javascript
+await agent.executeTool('downloadBinancePriceHistory', {
+  symbol: 'BTCUSDT',           // Trading pair
+  interval: '1h',              // 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 12h, 1d, 3d, 1w, 1M
+  limit: 1000,                 // Number of candles (max 1000)
+  startTime: '2024-01-01',     // Optional: ISO date or timestamp
+  endTime: null,               // Optional: ISO date or timestamp
+  outputFile: 'binance_btcusdt_1h.csv'
+});
+// Downloads and saves data in Binance CSV format
+```
+
+#### 2. Analyze Binance Data
+```javascript
+const analysis = await agent.executeTool('analyzeBinanceData', {
+  filename: 'binance_btcusdt_1h.csv'
+});
+// Returns comprehensive analysis:
+// - Price statistics (min, max, average, change %)
+// - Volume analysis (total, average, min, max)
+// - Volatility metrics (standard deviation, average return)
+// - Trend identification (bullish/bearish/neutral)
+// - Moving average comparisons (SMA20, SMA50)
+```
+
+#### 3. Calculate Crypto Technical Indicators
+```javascript
+await agent.executeTool('calculateCryptoIndicators', {
+  filename: 'binance_btcusdt_1h.csv',
+  indicators: ['RSI', 'MACD', 'BB', 'SMA', 'EMA']
+});
+// Adds technical indicators to the CSV:
+// - RSI (Relative Strength Index)
+// - MACD (Moving Average Convergence Divergence)
+// - BB (Bollinger Bands: upper, middle, lower)
+// - SMA (Simple Moving Average)
+// - EMA (Exponential Moving Average)
+```
+
+### CSV Tools (Binance-Aware)
+
+#### 4. List Technical Indicators
 ```javascript
 await agent.executeTool('listTechnicalIndicators', {
   filename: 'data.csv'
 });
-// Returns: ['SMA_20', 'RSI_14', 'MACD']
+// Returns: ['SMA_20', 'RSI_14', 'MACD', 'BB_upper', 'BB_lower']
+// Filters out standard Binance columns automatically
 ```
 
-#### 2. Add Technical Indicator
+#### 5. Add Technical Indicator
 ```javascript
 await agent.executeTool('addTechnicalIndicator', {
   filename: 'data.csv',
@@ -195,7 +298,7 @@ await agent.executeTool('addTechnicalIndicator', {
 });
 ```
 
-#### 3. Remove Technical Indicator
+#### 6. Remove Technical Indicator
 ```javascript
 await agent.executeTool('removeTechnicalIndicator', {
   filename: 'data.csv',
@@ -203,16 +306,19 @@ await agent.executeTool('removeTechnicalIndicator', {
 });
 ```
 
-### ML Pipeline Tools
+### ML Pipeline Tools (Binance-Optimized)
 
-#### 4. Test ML Pipeline
+#### 7. Test ML Pipeline
 ```javascript
 const pythonCode = `
+import pandas as pd
 import numpy as np
 from sklearn.metrics import mean_squared_error
-y_true = np.array([1, 2, 3])
-y_pred = np.array([1.1, 2.1, 3.1])
-mse = mean_squared_error(y_true, y_pred)
+from sklearn.model_selection import train_test_split
+
+# Works with Binance CSV format
+df = pd.read_csv('binance_btcusdt_1h.csv')
+# ... your ML pipeline code
 print(f'MSE: {mse}')
 `;
 
@@ -220,28 +326,29 @@ await agent.executeTool('testMLPipeline', { pythonCode });
 // Returns: { success: true, mse: 0.01, output: "..." }
 ```
 
-#### 5. Generate ML Pipeline (AI-Powered)
+#### 8. Generate ML Pipeline (AI-Powered, Binance-Optimized)
 ```javascript
-// Create new pipeline
+// Create new pipeline for Binance data
 await agent.executeTool('generateMLPipeline', {
   existingCode: null,
-  prompt: 'Create a price prediction pipeline using CatBoost with feature engineering'
+  prompt: 'Create a Binance price prediction pipeline using CatBoost with feature engineering'
 });
 
 // Optimize existing pipeline
 await agent.executeTool('generateMLPipeline', {
   existingCode: existingPipelineCode,
-  prompt: 'Add hyperparameter tuning and cross-validation'
+  prompt: 'Add hyperparameter tuning and cross-validation for crypto data'
 });
+// Generated code automatically handles Binance CSV format
 ```
 
-#### 6. List Python Modules
+#### 9. List Python Modules
 ```javascript
 await agent.executeTool('listPythonModules', {});
-// Returns: ['numpy', 'pandas', 'scikit-learn', ...]
+// Returns: ['numpy', 'pandas', 'scikit-learn', 'catboost', ...]
 ```
 
-#### 7. Install Python Module
+#### 10. Install Python Module
 ```javascript
 await agent.executeTool('installPythonModule', {
   moduleName: 'catboost'
@@ -250,7 +357,7 @@ await agent.executeTool('installPythonModule', {
 
 ### Memory Tools
 
-#### 8-10. Short-Term Memory
+#### 11-13. Short-Term Memory
 ```javascript
 // Store
 await agent.executeTool('storeMemory', {
@@ -288,6 +395,42 @@ await agent.executeTool('searchLongTermMemory', {
 
 ## Examples
 
+### Quick Start with Binance Data
+
+```javascript
+import ObscureXAgent from './agent.js';
+
+const agent = new ObscureXAgent();
+
+// Download Binance data
+await agent.executeTool('downloadBinancePriceHistory', {
+  symbol: 'BTCUSDT',
+  interval: '1h',
+  limit: 500,
+  outputFile: 'btc_data.csv'
+});
+
+// Analyze it
+const analysis = await agent.executeTool('analyzeBinanceData', {
+  filename: 'btc_data.csv'
+});
+console.log('Volatility:', analysis.result.volatility.volatilityPercent);
+console.log('Trend:', analysis.result.trends.shortTerm);
+
+// Add indicators
+await agent.executeTool('calculateCryptoIndicators', {
+  filename: 'btc_data.csv',
+  indicators: ['RSI', 'MACD', 'SMA']
+});
+
+// Train ML model
+await agent.runOptimizationLoop({
+  dataFile: 'btc_data.csv',
+  mseThreshold: 0.05,
+  maxIterations: 30
+});
+```
+
 See `examples.js` for basic tool usage and `orchestrator_demo.js` for memory and orchestrator examples.
 
 ```bash
@@ -296,27 +439,45 @@ node examples.js
 
 # Run orchestrator demo
 npm run demo
+
+# Test crypto tools
+node test_crypto_tools.js
 ```
 
 ## Architecture
 
-- **ObscureXAgent Class**: Main agent with all tool implementations
+- **ObscureXAgent Class**: Main agent with modular tool loading
 - **Anthropic Integration**: Uses Claude for intelligent code generation
 - **Memory System**: Dual-layer (short-term + long-term) JSON storage
-- **Orchestrator**: Automated optimization loop with learning
-- **Tool Registry**: 13 tools with metadata and execution functions
+- **Orchestrator**: Automated optimization loop with learning for Binance data
+- **Modular Tools**: 16 tools organized in 5 categories
+  - `tools/binance/` - Binance API integration (1 tool)
+  - `tools/analysis/` - Crypto analysis and indicators (2 tools)
+  - `tools/csv/` - CSV operations (3 tools)
+  - `tools/ml/` - ML pipeline management (4 tools)
+  - `tools/memory/` - Memory operations (6 tools)
 
 ## Requirements
 
 - Node.js 20.x or higher
 - Python 3.x with pip
+- Python packages: numpy, pandas, scikit-learn, catboost (optional)
 - Anthropic API key (for AI-powered features)
+- Internet connection (for Binance API data download)
 
 ## API Key
 
 The agent requires an Anthropic API key for AI-powered code generation and optimization. Get your key at: https://console.anthropic.com/
 
 Without an API key, the agent falls back to template-based generation (limited functionality).
+
+## New in Version 2.1
+
+- ✨ **Modular tool architecture** - Tools organized in separate files by category
+- 🔄 **Binance integration** - Download and analyze cryptocurrency data
+- 📊 **Advanced crypto indicators** - RSI, MACD, Bollinger Bands, SMA, EMA
+- 📈 **Binance-optimized ML** - Pipelines specifically designed for crypto data
+- 🎯 **Improved CSV handling** - Automatic detection of Binance format
 
 ## License
 

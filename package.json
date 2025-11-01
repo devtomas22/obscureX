@@ -1,7 +1,7 @@
 {
   "name": "obscurex-agent",
-  "version": "2.0.0",
-  "description": "Self-contained AI agent with orchestrator, memory management, and ML pipeline optimization",
+  "version": "2.1.0",
+  "description": "Self-contained AI agent with Binance integration, modular tools, memory management, and ML pipeline optimization",
   "main": "agent.js",
   "type": "module",
   "scripts": {
@@ -13,12 +13,17 @@
   "keywords": [
     "ai",
     "agent",
+    "binance",
+    "cryptocurrency",
+    "crypto",
+    "bitcoin",
     "technical-indicators",
     "machine-learning",
     "orchestrator",
     "memory",
     "optimization",
-    "anthropic"
+    "anthropic",
+    "price-prediction"
   ],
   "author": "",
   "license": "ISC",
