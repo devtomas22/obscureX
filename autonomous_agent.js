@@ -162,7 +162,7 @@ class AutonomousOrchestrator {
     const contextAnalysis = await this.agent.executeTool('analyzeContext', {
       currentState: currentState,
       objective: objective,
-      anthropic: this.agent.anthropic
+      aiService: this.agent.aiService
     });
 
     if (!contextAnalysis.success) {
@@ -178,7 +178,7 @@ class AutonomousOrchestrator {
     const executionOptions = await this.agent.executeTool('getExecutionOptions', {
       currentPhase: currentState.phase,
       currentState: currentState,
-      anthropic: this.agent.anthropic
+      aiService: this.agent.aiService
     });
 
     // verbose is not defined in this scope - remove verbose logging
@@ -198,7 +198,7 @@ class AutonomousOrchestrator {
         currentMSE: currentState.mse || Infinity,
         targetMSE: currentState.targetMSE,
         iterationNumber: currentState.iteration,
-        anthropic: this.agent.anthropic
+        aiService: this.agent.aiService
       });
 
       if (strategyRecommendation.success) {
@@ -267,7 +267,7 @@ class AutonomousOrchestrator {
     const generateResult = await this.agent.executeTool('generateMLPipeline', {
       existingCode: currentState.bestCode,
       prompt: prompt,
-      anthropic: this.agent.anthropic
+      aiService: this.agent.aiService
     });
 
     if (!generateResult.success) {

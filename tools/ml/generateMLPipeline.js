@@ -9,23 +9,23 @@ import { join } from 'path';
 export default {
   name: 'generateMLPipeline',
   description: 'Generate ML pipeline code using CatBoost and/or Neural Networks (works with Binance price data)',
-  parameters: { existingCode: 'string|null', prompt: 'string', anthropic: 'object|null' },
+  parameters: { existingCode: 'string|null', prompt: 'string', aiService: 'object|null' },
   
   async execute(params) {
-    const { existingCode, prompt, anthropic = null } = params;
+    const { existingCode, prompt, aiService = null } = params;
     
-    if (!anthropic) {
+    if (!aiService || !aiService.isAvailable()) {
       throw new Error('AI (Anthropic API) is required for generating ML pipelines. Please provide an API key.');
     }
     
     let code;
     
-    // Always use Anthropic API for code generation
+    // Always use AI Service for code generation
     try {
       if (existingCode) {
-        code = await this._optimizeMLPipelineWithAI(existingCode, prompt, anthropic);
+        code = await this._optimizeMLPipelineWithAI(existingCode, prompt, aiService);
       } else {
-        code = await this._initializeMLPipelineWithAI(prompt, anthropic);
+        code = await this._initializeMLPipelineWithAI(prompt, aiService);
       }
     } catch (error) {
       throw new Error(`Failed to generate ML pipeline with AI: ${error.message}`);
@@ -44,9 +44,9 @@ export default {
   },
 
   /**
-   * Initialize a new ML pipeline using Anthropic API
+   * Initialize a new ML pipeline using AI Service
    */
-  async _initializeMLPipelineWithAI(prompt, anthropic) {
+  async _initializeMLPipelineWithAI(prompt, aiService) {
     const systemPrompt = `You are an expert Python ML engineer specializing in cryptocurrency price prediction pipelines using Binance data.
 Generate complete, production-ready Python code for machine learning pipelines.
 The code should:
@@ -72,25 +72,13 @@ Requirements:
 
 Return ONLY the Python code, no explanations.`;
 
-    const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 4096,
-      messages: [{
-        role: 'user',
-        content: userPrompt
-      }],
-      system: systemPrompt
-    });
-
-    let code = message.content[0].text;
-    code = code.replace(/```python\n?/g, '').replace(/```\n?/g, '');
-    return code.trim();
+    return await aiService.generateCode(userPrompt, systemPrompt, 4096);
   },
 
   /**
-   * Optimize existing ML pipeline using Anthropic API
+   * Optimize existing ML pipeline using AI Service
    */
-  async _optimizeMLPipelineWithAI(existingCode, prompt, anthropic) {
+  async _optimizeMLPipelineWithAI(existingCode, prompt, aiService) {
     const systemPrompt = `You are an expert Python ML engineer specializing in optimizing cryptocurrency price prediction pipelines.
 Your task is to improve existing code based on specific optimization requests.
 Maintain the core functionality while adding requested improvements.`;
@@ -113,19 +101,7 @@ Please optimize the code according to the request. Common optimizations include:
 
 Return ONLY the complete optimized Python code, no explanations.`;
 
-    const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 4096,
-      messages: [{
-        role: 'user',
-        content: userPrompt
-      }],
-      system: systemPrompt
-    });
-
-    let code = message.content[0].text;
-    code = code.replace(/```python\n?/g, '').replace(/```\n?/g, '');
-    return code.trim();
+    return await aiService.generateCode(userPrompt, systemPrompt, 4096);
   },
 
 };

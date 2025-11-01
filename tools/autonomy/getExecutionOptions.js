@@ -8,22 +8,22 @@ export default {
   parameters: { 
     currentPhase: 'string', // Current execution phase (e.g., 'initialization', 'optimization', 'evaluation')
     currentState: 'object', // Current state (MSE, iteration, etc.)
-    anthropic: 'object|null'
+    aiService: 'object|null'
   },
   
   async execute(params, context) {
-    const { currentPhase, currentState, anthropic } = params;
+    const { currentPhase, currentState, aiService } = params;
     
     // Define available options based on phase
     const baseOptions = this._getBaseOptions(currentPhase, currentState);
     
     // If AI is available, enhance with AI recommendations
-    if (anthropic) {
+    if (aiService && aiService.isAvailable()) {
       const aiRecommendations = await this._getAIRecommendations(
         currentPhase, 
         currentState, 
         baseOptions,
-        anthropic
+        aiService
       );
       return {
         phase: currentPhase,
@@ -163,7 +163,7 @@ export default {
   /**
    * Get AI recommendations for next action
    */
-  async _getAIRecommendations(phase, state, options, anthropic) {
+  async _getAIRecommendations(phase, state, options, aiService) {
     const systemPrompt = `You are an AI execution flow advisor for ML pipeline optimization.
 Given the current phase, state, and available options, recommend the best next action(s).`;
 
@@ -181,31 +181,7 @@ Rank them by priority and provide reasoning for each.
 Format response as JSON array of recommendations.`;
 
     try {
-      const message = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 1024,
-        messages: [{
-          role: 'user',
-          content: userPrompt
-        }],
-        system: systemPrompt
-      });
-
-      const responseText = message.content[0].text;
-      
-      // Try to parse JSON response
-      let jsonText = responseText;
-      const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/);
-      if (jsonMatch) {
-        jsonText = jsonMatch[1];
-      } else {
-        const codeMatch = responseText.match(/```\s*([\s\S]*?)\s*```/);
-        if (codeMatch) {
-          jsonText = codeMatch[1];
-        }
-      }
-      
-      return JSON.parse(jsonText);
+      return await aiService.analyzeAndDecide(userPrompt, systemPrompt, 1024);
     } catch (error) {
       return [{
         action: options[0]?.action || 'continue_optimization',
