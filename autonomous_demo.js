@@ -12,7 +12,7 @@ async function demoAutonomyTools() {
   const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
 
   // Check if API key is available
-  if (!agent.anthropic) {
+  if (!agent.aiService.isAvailable()) {
     console.log('⚠️  ANTHROPIC_API_KEY not set. Running limited demo.\n');
     console.log('To see full AI-powered features, set your API key:');
     console.log('  export ANTHROPIC_API_KEY="your-key-here"\n');
@@ -34,7 +34,7 @@ async function demoAutonomyTools() {
   const optionsResult = await agent.executeTool('getExecutionOptions', {
     currentPhase: 'optimization',
     currentState: currentState,
-    anthropic: agent.anthropic
+    aiService: agent.aiService
   });
 
   if (optionsResult.success) {
@@ -72,7 +72,7 @@ async function demoAutonomyTools() {
     currentMSE: 0.15,
     targetMSE: 0.1,
     iterationNumber: 5,
-    anthropic: agent.anthropic
+    aiService: agent.aiService
   });
 
   if (strategyResult.success) {
@@ -124,7 +124,7 @@ async function demoAutonomyTools() {
       threshold: 0.1
     },
     objective: 'Achieve MSE below 0.1 for cryptocurrency price prediction',
-    anthropic: agent.anthropic
+    aiService: agent.aiService
   });
 
   if (contextResult.success) {

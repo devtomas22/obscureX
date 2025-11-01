@@ -157,7 +157,7 @@ Decide the next action. Response format (JSON):
   /**
    * Get execution options
    */
-  async _getExecutionOptions(phase, state, anthropic, context) {
+  async _getExecutionOptions(phase, state, aiService, context) {
     // Simplified inline version
     const options = {
       initialization: ['download_data', 'analyze_data', 'add_indicators', 'start_optimization'],
