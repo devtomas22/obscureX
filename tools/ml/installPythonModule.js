@@ -25,8 +25,7 @@ export default {
     try {
       const output = execSync(`pip3 install ${moduleName}`, { 
         encoding: 'utf-8',
-        timeout: 300000, // 5 minutes timeout
-        shell: '/bin/sh'
+        timeout: 300000 // 5 minutes timeout
       });
       
       return {

@@ -209,12 +209,13 @@ class ObscureXAgent {
         
         let testCode = currentCode;
         if (dataFile) {
-          testCode = testCode.replace('# df = load_binance_data(\'binance', `df = load_binance_data('${dataFile}`);
+          // Replace template comments with actual data file usage
+          testCode = testCode.replace(/# df = load_binance_data\([^)]*\)/g, `df = load_binance_data('${dataFile}')`);
           testCode = testCode.replace('# X, y = prepare_features(df)', 'X, y = prepare_features(df)');
           testCode = testCode.replace('# mse, model = train_and_evaluate(X, y)', 'mse, model = train_and_evaluate(X, y)');
-          testCode = testCode.replace('# print(f\'MSE: {mse}\')', 'print(f\'MSE: {mse}\')');
+          testCode = testCode.replace("# print(f'MSE: {mse}')", "print(f'MSE: {mse}')");
           testCode = testCode.replace('print(\'Pipeline template generated for Binance price data.\')', '');
-          testCode = testCode.replace('print(\'MSE: 0.0\')', '');
+          testCode = testCode.replace("print('MSE: 0.0')", '');
         }
 
         const testResult = await this.executeTool('testMLPipeline', {

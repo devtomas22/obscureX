@@ -264,13 +264,21 @@ export default {
     
     // Start with SMA for first value
     let prevEMA = data.slice(0, period).reduce((a, b) => a + b, 0) / period;
-    ema.push(prevEMA);
     
-    // Calculate EMA for remaining values
-    for (let i = 1; i < data.length; i++) {
-      const currentEMA = (data[i] - prevEMA) * multiplier + prevEMA;
-      ema.push(currentEMA);
-      prevEMA = currentEMA;
+    // Push EMA values for the entire array
+    for (let i = 0; i < data.length; i++) {
+      if (i < period - 1) {
+        // For the first period-1 values, use 0 or NaN as placeholder
+        ema.push(0);
+      } else if (i === period - 1) {
+        // First EMA is the SMA
+        ema.push(prevEMA);
+      } else {
+        // Calculate EMA for subsequent values
+        const currentEMA = (data[i] - prevEMA) * multiplier + prevEMA;
+        ema.push(currentEMA);
+        prevEMA = currentEMA;
+      }
     }
     
     return ema;
