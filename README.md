@@ -1,6 +1,6 @@
 # ObscureX AI Agent
 
-A self-contained AI agent with modular tools for cryptocurrency analysis, ML pipeline optimization, and Binance data integration. Uses Anthropic's Claude AI for intelligent code generation and optimization.
+A self-contained AI agent with modular tools for cryptocurrency analysis, ML pipeline optimization, and Binance data integration. **Requires Anthropic's Claude AI for all code generation** - the agent uses AI to generate Python code for technical indicators and ML pipelines, with intelligent caching to optimize performance.
 
 ## Features
 
@@ -9,7 +9,7 @@ A self-contained AI agent with modular tools for cryptocurrency analysis, ML pip
 **Binance & Cryptocurrency:**
 1. **Download Binance Price History** - Download historical price data from Binance API in CSV format
 2. **Analyze Binance Data** - Statistical analysis including volatility, trends, and volume analysis
-3. **Calculate Crypto Indicators** - Calculate technical indicators (RSI, MACD, Bollinger Bands, SMA, EMA)
+3. **Calculate Crypto Indicators** - Calculate technical indicators (RSI, MACD, Bollinger Bands, SMA, EMA) **using AI-generated Python code with caching**
 
 **CSV & Technical Indicators:**
 4. **List Technical Indicators** - List all technical indicators in a CSV file (Binance-aware)
@@ -18,7 +18,7 @@ A self-contained AI agent with modular tools for cryptocurrency analysis, ML pip
 
 **ML Pipeline Management:**
 7. **Test ML Pipeline** - Execute a Python ML pipeline and return MSE value (optimized for Binance data)
-8. **Generate ML Pipeline** - Create ML pipeline code using CatBoost and/or Neural Networks (AI-powered, Binance-optimized)
+8. **Generate ML Pipeline** - Create ML pipeline code using CatBoost and/or Neural Networks (**Requires AI** - no template fallback, Binance-optimized)
 9. **List Python Modules** - List all installed Python packages
 10. **Install Python Module** - Install a Python package using pip
 
@@ -38,6 +38,14 @@ Tools are now organized in a modular directory structure:
 - **`tools/csv/`** - CSV file operations (all Binance CSV format aware)
 - **`tools/ml/`** - Machine learning pipeline management
 - **`tools/memory/`** - Short-term and long-term memory operations
+
+### AI-First Approach
+
+**All code generation now requires AI:**
+- Technical indicator calculations use AI-generated Python code (cached in long-term memory)
+- ML pipeline generation always uses AI (no template fallback)
+- Python code is executed via child_process for maximum flexibility
+- Smart caching prevents redundant code generation
 
 ### Orchestrator
 
@@ -71,7 +79,7 @@ npm install
 
 ## Setup
 
-Set your Anthropic API key:
+**Anthropic API key is now required** for all code generation features:
 
 ```bash
 export ANTHROPIC_API_KEY='your-api-key-here'
@@ -82,6 +90,8 @@ Or pass it when creating the agent:
 ```javascript
 const agent = new ObscureXAgent('your-api-key-here');
 ```
+
+Without an API key, only basic tools like memory management, CSV operations (list/add/remove), and Python module management will work.
 
 ## Usage
 
@@ -271,7 +281,7 @@ await agent.executeTool('calculateCryptoIndicators', {
   filename: 'binance_btcusdt_1h.csv',
   indicators: ['RSI', 'MACD', 'BB', 'SMA', 'EMA']
 });
-// Adds technical indicators to the CSV:
+// Uses AI-generated Python code (cached for performance) to add technical indicators:
 // - RSI (Relative Strength Index)
 // - MACD (Moving Average Convergence Divergence)
 // - BB (Bollinger Bands: upper, middle, lower)
@@ -326,9 +336,9 @@ await agent.executeTool('testMLPipeline', { pythonCode });
 // Returns: { success: true, mse: 0.01, output: "..." }
 ```
 
-#### 8. Generate ML Pipeline (AI-Powered, Binance-Optimized)
+#### 8. Generate ML Pipeline (AI-Powered - Required)
 ```javascript
-// Create new pipeline for Binance data
+// Create new pipeline for Binance data (requires Anthropic API key)
 await agent.executeTool('generateMLPipeline', {
   existingCode: null,
   prompt: 'Create a Binance price prediction pipeline using CatBoost with feature engineering'
@@ -339,6 +349,7 @@ await agent.executeTool('generateMLPipeline', {
   existingCode: existingPipelineCode,
   prompt: 'Add hyperparameter tuning and cross-validation for crypto data'
 });
+// AI always generates code - no template fallback
 // Generated code automatically handles Binance CSV format
 ```
 
@@ -462,16 +473,27 @@ node test_crypto_tools.js
 - Node.js 20.x or higher
 - Python 3.x with pip
 - Python packages: numpy, pandas, scikit-learn, catboost (optional)
-- Anthropic API key (for AI-powered features)
+- **Anthropic API key (REQUIRED for code generation features)**
 - Internet connection (for Binance API data download)
 
 ## API Key
 
-The agent requires an Anthropic API key for AI-powered code generation and optimization. Get your key at: https://console.anthropic.com/
+The agent **requires** an Anthropic API key for AI-powered code generation features. Get your key at: https://console.anthropic.com/
 
-Without an API key, the agent falls back to template-based generation (limited functionality).
+**Without an API key:**
+- Technical indicator calculations will fail (requires AI)
+- ML pipeline generation will fail (requires AI)
+- Basic tools (memory, CSV list/add/remove, Python modules) will still work
 
-## New in Version 2.1
+## New in Version 2.2 (AI-First Update)
+
+- ✨ **AI-first code generation** - All Python code now generated by AI
+- 🧠 **Intelligent caching** - Technical indicator code cached in long-term memory
+- ⚡ **Performance optimization** - Cached code reused across sessions
+- 🚫 **No template fallback** - ML pipeline generation requires AI (more reliable)
+- 🐍 **Python execution** - All generated code runs via child_process
+
+## Previous Updates (Version 2.1)
 
 - ✨ **Modular tool architecture** - Tools organized in separate files by category
 - 🔄 **Binance integration** - Download and analyze cryptocurrency data
