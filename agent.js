@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { randomBytes } from 'crypto';
-import Anthropic from '@anthropic-ai/sdk';
+import AIService from './services/AIService.js';
 import { loadTools, getTool } from './tools/toolLoader.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -17,13 +17,8 @@ const __dirname = dirname(__filename);
 
 class ObscureXAgent {
   constructor(apiKey = null, memoryPath = './agent_memory.json', longTermMemoryPath = './agent_longterm_memory.json') {
-    // Initialize Anthropic client if API key is provided
-    this.anthropic = null;
-    if (apiKey || process.env.ANTHROPIC_API_KEY) {
-      this.anthropic = new Anthropic({
-        apiKey: apiKey || process.env.ANTHROPIC_API_KEY
-      });
-    }
+    // Initialize AI Service
+    this.aiService = new AIService(apiKey);
     
     // Memory management
     this.memoryPath = memoryPath;
@@ -97,10 +92,10 @@ class ObscureXAgent {
         saveMemory: this._saveMemory.bind(this),
         memoryPath: this.memoryPath,
         longTermMemoryPath: this.longTermMemoryPath,
-        anthropic: this.anthropic
+        aiService: this.aiService
       };
       
-      // For tools that need AI, pass anthropic client in params
+      // For tools that need AI, pass aiService in params
       const aiRequiredTools = [
         'generateMLPipeline', 
         'analyzeContext', 
@@ -110,7 +105,7 @@ class ObscureXAgent {
       ];
       
       if (aiRequiredTools.includes(toolName)) {
-        params = { ...params, anthropic: this.anthropic };
+        params = { ...params, aiService: this.aiService };
       }
       
       const result = await tool.execute(params, context);
@@ -341,7 +336,7 @@ class ObscureXAgent {
    * Generate optimization prompt using AI or fallback
    */
   async _generateOptimizationPrompt(currentCode, lastMSE, iteration) {
-    if (!this.anthropic) {
+    if (!this.aiService.isAvailable()) {
       const strategies = [
         'Add hyperparameter tuning with GridSearchCV',
         'Add feature engineering with polynomial features',
@@ -373,16 +368,9 @@ ${history}
 
 What specific optimization should be applied next to reduce MSE? Be concise and specific.`;
 
-      const message = await this.anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 200,
-        messages: [{
-          role: 'user',
-          content: prompt
-        }]
-      });
+      const systemPrompt = 'You are an expert ML optimization strategist for cryptocurrency price prediction pipelines.';
 
-      return message.content[0].text.trim();
+      return await this.aiService.generateText(prompt, systemPrompt, 200);
     } catch (error) {
       console.warn('Failed to generate AI prompt, using fallback:', error.message);
       return 'Optimize hyperparameters and add cross-validation';

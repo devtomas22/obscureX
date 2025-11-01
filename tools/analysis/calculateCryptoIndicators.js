@@ -19,9 +19,9 @@ export default {
   
   async execute(params, context) {
     const { filename, indicators = ['RSI', 'MACD', 'SMA'] } = params;
-    const { anthropic, longTermMemory, saveMemory, longTermMemoryPath } = context;
+    const { aiService, longTermMemory, saveMemory, longTermMemoryPath } = context;
     
-    if (!anthropic) {
+    if (!aiService || !aiService.isAvailable()) {
       throw new Error('AI (Anthropic API) is required for calculating technical indicators. Please provide an API key.');
     }
     
@@ -39,7 +39,7 @@ export default {
       pythonCode = cachedEntry.value.code;
     } else {
       console.log(`Generating Python code for indicators: ${indicators.join(', ')}`);
-      pythonCode = await this._generateIndicatorPython(indicators, anthropic);
+      pythonCode = await this._generateIndicatorPython(indicators, aiService);
       
       // Cache the generated code in long-term memory
       longTermMemory.entries.push({
@@ -72,7 +72,7 @@ export default {
   /**
    * Generate Python code for calculating technical indicators using AI
    */
-  async _generateIndicatorPython(indicators, anthropic) {
+  async _generateIndicatorPython(indicators, aiService) {
     const systemPrompt = `You are an expert Python developer specializing in technical analysis and financial indicators.
 Generate complete, production-ready Python code for calculating technical indicators from CSV data.
 The code should:
@@ -104,19 +104,7 @@ Requirements:
 
 Return ONLY the Python code, no explanations or markdown.`;
 
-    const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 4096,
-      messages: [{
-        role: 'user',
-        content: userPrompt
-      }],
-      system: systemPrompt
-    });
-
-    let code = message.content[0].text;
-    code = code.replace(/```python\n?/g, '').replace(/```\n?/g, '');
-    return code.trim();
+    return await aiService.generateCode(userPrompt, systemPrompt, 4096);
   },
 
   /**

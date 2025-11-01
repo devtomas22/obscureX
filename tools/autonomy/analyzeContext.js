@@ -8,13 +8,13 @@ export default {
   parameters: { 
     currentState: 'object', // Current execution state (MSE, iteration, etc.)
     objective: 'string', // What we're trying to achieve
-    anthropic: 'object|null' 
+    aiService: 'object|null' 
   },
   
   async execute(params, context) {
-    const { currentState, objective, anthropic } = params;
+    const { currentState, objective, aiService } = params;
     
-    if (!anthropic) {
+    if (!aiService || !aiService.isAvailable()) {
       throw new Error('AI (Anthropic API) is required for context analysis. Please provide an API key.');
     }
     
@@ -31,7 +31,7 @@ export default {
     );
     
     // Use AI to analyze and decide
-    const decision = await this._analyzeWithAI(contextSummary, anthropic);
+    const decision = await this._analyzeWithAI(contextSummary, aiService);
     
     return {
       decision,
@@ -83,7 +83,7 @@ export default {
   /**
    * Use AI to analyze context and decide next action
    */
-  async _analyzeWithAI(contextSummary, anthropic) {
+  async _analyzeWithAI(contextSummary, aiService) {
     const systemPrompt = `You are an autonomous AI agent decision-maker for machine learning pipeline optimization.
 Your role is to analyze the current context and decide the best next action.
 
@@ -119,42 +119,7 @@ Based on this context, what should be the next action? Provide:
 
 Format your response as JSON.`;
 
-    const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 1024,
-      messages: [{
-        role: 'user',
-        content: userPrompt
-      }],
-      system: systemPrompt
-    });
-
-    const responseText = message.content[0].text;
-    
-    // Try to parse JSON response
-    try {
-      // Extract JSON from markdown code blocks if present
-      let jsonText = responseText;
-      const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/);
-      if (jsonMatch) {
-        jsonText = jsonMatch[1];
-      } else {
-        const codeMatch = responseText.match(/```\s*([\s\S]*?)\s*```/);
-        if (codeMatch) {
-          jsonText = codeMatch[1];
-        }
-      }
-      
-      return JSON.parse(jsonText);
-    } catch (error) {
-      // Fallback: return as structured text
-      return {
-        action: 'analyze_response',
-        reasoning: 'AI provided non-JSON response',
-        details: responseText,
-        confidence: 'Medium'
-      };
-    }
+    return await aiService.analyzeAndDecide(userPrompt, systemPrompt, 1024);
   },
   
   /**

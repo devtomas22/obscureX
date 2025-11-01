@@ -10,13 +10,13 @@ export default {
     currentMSE: 'number',
     targetMSE: 'number',
     iterationNumber: 'number',
-    anthropic: 'object|null'
+    aiService: 'object|null'
   },
   
   async execute(params, context) {
-    const { mseHistory, currentMSE, targetMSE, iterationNumber, anthropic } = params;
+    const { mseHistory, currentMSE, targetMSE, iterationNumber, aiService } = params;
     
-    if (!anthropic) {
+    if (!aiService || !aiService.isAvailable()) {
       // Fallback to rule-based strategy
       return this._fallbackStrategy(mseHistory, currentMSE, targetMSE, iterationNumber);
     }
@@ -30,7 +30,7 @@ export default {
     // Use AI to recommend strategy
     const recommendation = await this._getAIRecommendation(
       { mseHistory, currentMSE, targetMSE, iterationNumber, trends, recentAttempts },
-      anthropic
+      aiService
     );
     
     return {
@@ -91,7 +91,7 @@ export default {
   /**
    * Use AI to recommend optimization strategy
    */
-  async _getAIRecommendation(analysisContext, anthropic) {
+  async _getAIRecommendation(analysisContext, aiService) {
     const systemPrompt = `You are an expert ML optimization strategist specializing in cryptocurrency price prediction.
 Your role is to analyze MSE trends and recommend the most effective optimization strategy.
 
@@ -131,31 +131,7 @@ Based on this analysis, recommend:
 Format response as JSON with keys: strategy, technique, expectedImpact, alternativeStrategy, tryDifferentApproach (boolean)`;
 
     try {
-      const message = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 1024,
-        messages: [{
-          role: 'user',
-          content: userPrompt
-        }],
-        system: systemPrompt
-      });
-
-      const responseText = message.content[0].text;
-      
-      // Parse JSON response
-      let jsonText = responseText;
-      const jsonMatch = responseText.match(/```json\s*([\s\S]*?)\s*```/);
-      if (jsonMatch) {
-        jsonText = jsonMatch[1];
-      } else {
-        const codeMatch = responseText.match(/```\s*([\s\S]*?)\s*```/);
-        if (codeMatch) {
-          jsonText = codeMatch[1];
-        }
-      }
-      
-      return JSON.parse(jsonText);
+      return await aiService.analyzeAndDecide(userPrompt, systemPrompt, 1024);
     } catch (error) {
       return this._fallbackStrategy(
         analysisContext.mseHistory, 

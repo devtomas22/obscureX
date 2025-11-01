@@ -9,13 +9,13 @@ export default {
     currentState: 'object', // Current state including MSE, iteration, phase, etc.
     objective: 'string',
     dataFile: 'string|null',
-    anthropic: 'object|null'
+    aiService: 'object|null'
   },
   
   async execute(params, context) {
-    const { currentState, objective, dataFile, anthropic } = params;
+    const { currentState, objective, dataFile, aiService } = params;
     
-    if (!anthropic) {
+    if (!aiService || !aiService.isAvailable()) {
       throw new Error('AI (Anthropic API) is required for autonomous decisions. Please provide an API key.');
     }
     
@@ -30,7 +30,7 @@ export default {
       const contextAnalysis = await this._analyzeContext(
         currentState, 
         objective, 
-        anthropic, 
+        aiService, 
         context
       );
       
@@ -42,7 +42,7 @@ export default {
       const executionOptions = await this._getExecutionOptions(
         currentState.phase,
         currentState,
-        anthropic,
+        aiService,
         context
       );
       
@@ -54,7 +54,7 @@ export default {
         console.log('\n[3/4] Getting optimization strategy recommendation...');
         strategyRecommendation = await this._getOptimizationStrategy(
           currentState,
-          anthropic,
+          aiService,
           context
         );
         console.log(`Strategy: ${strategyRecommendation.recommendation.strategy}`);
@@ -105,7 +105,7 @@ export default {
   /**
    * Analyze context using AI
    */
-  async _analyzeContext(currentState, objective, anthropic, context) {
+  async _analyzeContext(currentState, objective, aiService, context) {
     // Gather context
     const shortTerm = context.memory.entries?.slice(-10) || [];
     const longTerm = context.longTermMemory.entries?.slice(-5) || [];
@@ -139,23 +139,14 @@ Decide the next action. Response format (JSON):
   "confidence": "High/Medium/Low"
 }`;
 
-    const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 1024,
-      messages: [{ role: 'user', content: userPrompt }],
-      system: systemPrompt
-    });
-
     let decision;
     try {
-      const text = message.content[0].text;
-      const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, text];
-      decision = JSON.parse(jsonMatch[1]);
+      decision = await aiService.analyzeAndDecide(userPrompt, systemPrompt, 1024);
     } catch (error) {
       decision = {
         action: 'continue_optimization',
         reasoning: 'Default action',
-        details: message.content[0].text,
+        details: 'Fallback due to parsing error',
         confidence: 'Medium'
       };
     }
@@ -184,7 +175,7 @@ Decide the next action. Response format (JSON):
   /**
    * Get optimization strategy recommendation
    */
-  async _getOptimizationStrategy(currentState, anthropic, context) {
+  async _getOptimizationStrategy(currentState, aiService, context) {
     const mseHistory = currentState.mseHistory || [];
     const currentMSE = currentState.mse;
     const targetMSE = currentState.targetMSE || currentState.threshold;
@@ -206,17 +197,7 @@ Recommend optimization strategy (JSON):
 }`;
 
     try {
-      const message = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 512,
-        messages: [{ role: 'user', content: userPrompt }],
-        system: systemPrompt
-      });
-      
-      const text = message.content[0].text;
-      const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, text];
-      const recommendation = JSON.parse(jsonMatch[1]);
-      
+      const recommendation = await aiService.analyzeAndDecide(userPrompt, systemPrompt, 512);
       return { recommendation };
     } catch (error) {
       return {
