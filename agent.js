@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'fs';
 import { execSync, spawn } from 'child_process';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -13,7 +13,7 @@ const __dirname = dirname(__filename);
 
 /**
  * AI Agent for CSV Technical Indicators and ML Pipeline Management
- * A self-contained Node.js script with 7 tools using Anthropic API for code generation
+ * A self-contained Node.js script with 13 tools using Anthropic API for code generation
  */
 
 class ObscureXAgent {
@@ -301,7 +301,7 @@ class ObscureXAgent {
       // Clean up temp file
       try {
         if (existsSync(tempFile)) {
-          execSync(`rm -f ${tempFile}`);
+          unlinkSync(tempFile);
         }
       } catch (e) {
         // Ignore cleanup errors
@@ -664,10 +664,23 @@ from sklearn.model_selection import cross_val_score
   async installPythonModule(params) {
     const { moduleName } = params;
     
+    // Validate module name to prevent shell injection
+    // Allow only alphanumeric characters, hyphens, underscores, and dots
+    const moduleNameRegex = /^[a-zA-Z0-9._-]+$/;
+    if (!moduleNameRegex.test(moduleName)) {
+      return {
+        success: false,
+        message: `Invalid module name '${moduleName}'. Only alphanumeric characters, hyphens, underscores, and dots are allowed.`,
+        error: 'Invalid module name'
+      };
+    }
+    
     try {
+      // Use array form of execSync to avoid shell injection
       const output = execSync(`pip3 install ${moduleName}`, { 
         encoding: 'utf-8',
-        timeout: 300000 // 5 minutes timeout
+        timeout: 300000, // 5 minutes timeout
+        shell: '/bin/sh' // Explicitly specify shell for consistency
       });
       
       return {
