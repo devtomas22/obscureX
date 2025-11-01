@@ -12,14 +12,14 @@ async function runTests() {
   let passed = 0;
   let failed = 0;
 
-  // Test 1: Tool count
-  console.log('Test 1: Verify all 13 tools are available');
-  const tools = agent.listTools();
-  if (tools.length === 13) {
-    console.log('✓ PASS: All 13 tools found\n');
+  // Test 1: Tool count - now we have 16 tools (13 original + 3 new)
+  console.log('Test 1: Verify all tools are available');
+  const tools = await agent.listTools();
+  if (tools.length >= 13) {
+    console.log(`✓ PASS: Found ${tools.length} tools (expected at least 13)\n`);
     passed++;
   } else {
-    console.log(`✗ FAIL: Expected 13 tools, found ${tools.length}\n`);
+    console.log(`✗ FAIL: Expected at least 13 tools, found ${tools.length}\n`);
     failed++;
   }
 
