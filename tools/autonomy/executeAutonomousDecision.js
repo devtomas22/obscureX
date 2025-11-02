@@ -2,6 +2,8 @@
  * Tool: Execute Autonomous Decision
  * Execute a single autonomous decision cycle - analyzes context and executes next action
  */
+import pipService from '../pip/pipService.js';
+
 export default {
   name: 'executeAutonomousDecision',
   description: 'Execute one autonomous decision cycle: analyze context, decide action, execute',
@@ -74,6 +76,15 @@ export default {
       
       console.log(`Execution result: ${executionResult.success ? 'Success' : 'Failed'}`);
       
+      // Post-step: detect Python code and maintain requirements.txt with pip install
+      const repoRoot = context?.repoRoot || context?.projectRoot || process.cwd();
+      const requirementsUpdate = await this._handlePythonRequirements(
+        contextAnalysis,
+        executionResult,
+        aiService,
+        { ...context, repoRoot }
+      );
+
       // Store decision and result in memory
       await this._storeDecisionResult(
         currentState,
@@ -88,6 +99,7 @@ export default {
         executionOptions,
         strategyRecommendation,
         executionResult,
+        requirementsUpdate, // includes filePath/updated info or null
         nextState: executionResult.nextState,
         timestamp: new Date().toISOString()
       };
@@ -290,5 +302,96 @@ Recommend optimization strategy (JSON):
     }
     context.memory.entries.push(entry);
     context.saveMemory(context.memoryPath, context.memory);
-  }
+  },
+
+  async _handlePythonRequirements(contextAnalysis, executionResult, aiService, context) {
+    try {
+      const snippets = this._extractPythonSnippets(contextAnalysis?.decision, executionResult, context);
+      if (!snippets.length || !aiService) return null;
+
+      const allPkgs = new Set();
+      for (const code of snippets) {
+        const reqs = await this._generateRequirementsFromAI(code, aiService);
+        (reqs || []).forEach((r) => r && allPkgs.add(String(r).trim()));
+      }
+      if (!allPkgs.size) return null;
+
+      const result = await pipService.updateRequirementsAndInstall([...allPkgs], context.repoRoot);
+      return { ...result, packages: [...allPkgs] };
+    } catch (e) {
+      console.warn('Requirements handling skipped:', e.message);
+      return null;
+    }
+  },
+
+  _extractPythonSnippets(decision, executionResult, context) {
+    const snippets = [];
+    const candidates = [];
+
+    // Decision/details text
+    if (decision?.details && typeof decision.details === 'string') candidates.push(decision.details);
+    if (decision?.reasoning && typeof decision.reasoning === 'string') candidates.push(decision.reasoning);
+
+    // Execution result fields
+    if (executionResult?.message) candidates.push(String(executionResult.message));
+    if (executionResult?.details) {
+      const d = executionResult.details;
+      if (typeof d === 'string') candidates.push(d);
+      if (typeof d?.pythonCode === 'string') candidates.push(d.pythonCode);
+      if (typeof d?.code === 'string') candidates.push(d.code);
+    }
+
+    // Recent memory (light scan)
+    const recentEntries = (context?.memory?.entries || []).slice(-5);
+    for (const e of recentEntries) {
+      const v = e?.value;
+      if (typeof v === 'string') candidates.push(v);
+      if (typeof v?.pythonCode === 'string') candidates.push(v.pythonCode);
+      if (typeof v?.code === 'string') candidates.push(v.code);
+      if (typeof v?.details === 'string') candidates.push(v.details);
+    }
+
+    // Extract fenced python code blocks
+    const fence = /```python([\s\S]*?)```/gi;
+    for (const text of candidates) {
+      if (!text) continue;
+      let m;
+      while ((m = fence.exec(text))) {
+        const code = (m[1] || '').trim();
+        if (code) snippets.push(code);
+      }
+    }
+
+    // Heuristic: if none found, look for import patterns (fallback)
+    if (!snippets.length) {
+      const importLike = candidates.find((t) => /\b(import|from)\s+[A-Za-z0-9_\.]+/m.test(t || ''));
+      if (importLike) snippets.push(importLike);
+    }
+
+    return snippets;
+  },
+
+  async _generateRequirementsFromAI(pythonCode, aiService) {
+    const systemPrompt = `You are a Python dependency analyzer. Given Python code, list pip-installable package names.
+Output JSON with the shape: {"requirements":["pkg1","pkg2"]}. Use top-level pip names (e.g., "pandas", "numpy").`;
+    const userPrompt = `Python code:\n\n${pythonCode}\n\nReturn only JSON as specified.`;
+
+    try {
+      const resp = await aiService.analyzeAndDecide(userPrompt, systemPrompt, 256);
+      // Coerce various possible shapes
+      if (Array.isArray(resp)) return resp;
+      if (resp?.requirements && Array.isArray(resp.requirements)) return resp.requirements;
+      if (typeof resp === 'string') {
+        try {
+          const obj = JSON.parse(resp);
+          if (obj?.requirements && Array.isArray(obj.requirements)) return obj.requirements;
+        } catch {
+          // ignore
+        }
+      }
+    } catch {
+      // ignore AI failure
+    }
+    return [];
+  },
 };
