@@ -25,10 +25,10 @@ pip install -r requirements.txt
 ### 2. Set API Key
 
 ```bash
-export GOOGLE_API_KEY='your-api-key-here'
+export ANTHROPIC_API_KEY='your-api-key-here'
 ```
 
-Get your key at: https://aistudio.google.com/apikey
+Get your key at: https://console.anthropic.com/
 
 ### 3. Run Examples
 
@@ -90,7 +90,7 @@ from obscurex import ObscureXAgent
 
 async def main():
     # Create agent with API key
-    agent = ObscureXAgent(api_key=os.environ.get('GOOGLE_API_KEY'))
+    agent = ObscureXAgent(api_key=os.environ.get('ANTHROPIC_API_KEY'))
     
     # Use autonomous decision-making tools
     result = await agent.execute_tool('executeAutonomousDecision', {
@@ -177,7 +177,7 @@ All based on MSE trends and memory!
 ## Troubleshooting
 
 **"AI API key not available"**
-- Set GOOGLE_API_KEY environment variable
+- Set ANTHROPIC_API_KEY environment variable
 
 **"No data file found"**
 - Provide valid CSV file as first argument
@@ -194,20 +194,23 @@ All based on MSE trends and memory!
 
 ### Use Individual Autonomy Tools
 
-```javascript
-const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
+```python
+import os
+from obscurex import ObscureXAgent
 
-// Get execution options
-const options = await agent.executeTool('getExecutionOptions', {
-  currentPhase: 'optimization',
-  currentState: { mse: 0.15, threshold: 0.1 }
-});
+agent = ObscureXAgent(api_key=os.environ.get('ANTHROPIC_API_KEY'))
 
-// Get strategy recommendation
-const strategy = await agent.executeTool('recommendOptimizationStrategy', {
-  mseHistory: [0.25, 0.22, 0.20, 0.18, 0.15],
-  currentMSE: 0.15,
-  targetMSE: 0.1,
+# Get execution options
+options = await agent.execute_tool('getExecutionOptions', {
+    'currentPhase': 'optimization',
+    'currentState': {'mse': 0.15, 'threshold': 0.1}
+})
+
+# Get strategy recommendation
+strategy = await agent.execute_tool('recommendOptimizationStrategy', {
+    'mseHistory': [0.25, 0.22, 0.20, 0.18, 0.15],
+    'currentMSE': 0.15,
+    'targetMSE': 0.1,
   iterationNumber: 5
 });
 

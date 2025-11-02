@@ -1,7 +1,7 @@
 # ObscureX Agent - Feature Summary
 
 ## Overview
-An autonomous, self-directed AI agent built in Python with modular tool architecture, Binance cryptocurrency integration, **fully autonomous decision-making**, orchestration capabilities, dual-layer memory management, and ML pipeline optimization powered by Google Gemini AI. **Version 3.0 introduces complete autonomy** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention.
+An autonomous, self-directed AI agent built in Python with modular tool architecture, Binance cryptocurrency integration, **fully autonomous decision-making**, orchestration capabilities, dual-layer memory management, and ML pipeline optimization powered by Anthropic Claude AI. **Version 3.0 introduces complete autonomy** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention.
 
 ## Complete Feature Set
 
@@ -167,7 +167,7 @@ The traditional orchestrator provides structured optimization:
 
 **Key Features:**
 - Iterative ML pipeline optimization loop
-- AI-powered strategy generation using Gemini
+- AI-powered strategy generation using Claude
 - Automatic MSE tracking and comparison
 - Best model persistence in long-term memory
 - Configurable MSE threshold and iteration limits
@@ -208,8 +208,8 @@ The traditional orchestrator provides structured optimization:
 
 ### AI Integration
 
-**Google Gemini Integration (REQUIRED):**
-- Model: `gemini-2.0-flash-exp`
+**Anthropic Claude Integration (REQUIRED):**
+- Model: `claude-3-5-sonnet-20241022`
 - Used for ALL code generation (technical indicators and ML pipelines)
 - **🆕 Used for autonomous decision-making** - analyzes context, decides actions
 - **🆕 Used for strategy recommendations** - MSE trend analysis and optimization suggestions
@@ -275,7 +275,7 @@ obscureX/
 ├── obscurex/                      # Python package
 │   ├── agent.py                   # Main agent with dynamic tool loading
 │   ├── services/                  # Services
-│   │   └── ai_service.py          # Google Gemini AI integration
+│   │   └── ai_service.py          # Anthropic Claude AI integration
 │   └── tools/                     # Modular tool directory
 │       ├── binance/               # Binance integration
 │       │   └── download_binance_price_history.py
@@ -363,7 +363,7 @@ All core tests passing with 100% success rate.
 ## Dependencies
 
 **Python Packages:**
-- `google-generativeai` (>= 0.3.0) - Google Gemini AI integration
+- `anthropic` (>= 0.72.0) - Anthropic Claude AI integration
 - `requests` (>= 2.31.0) - HTTP requests for Binance API
 - `pandas` (>= 2.0.0) - Data manipulation
 - `numpy` (>= 1.24.0) - Numerical computing
@@ -380,10 +380,10 @@ All core tests passing with 100% success rate.
 1. **Modular Architecture**: Tools separated into category-based directories
 2. **Dynamic Loading**: Tools loaded at runtime for extensibility
 3. **Binance-First**: All CSV tools understand Binance data format
-4. **No Agent Framework**: Built from scratch with only Google Generative AI SDK dependency
+4. **No Agent Framework**: Built from scratch with only Anthropic Claude SDK dependency
 5. **Dual Memory**: Separate short-term and long-term for different use cases
 6. **JSON Persistence**: Simple, human-readable storage format
-7. **AI-First**: Leverage Gemini for ALL code generation (required)
+7. **AI-First**: Leverage Claude for ALL code generation (required)
 8. **Intelligent Caching**: Generated indicator code cached in long-term memory
 9. **Python Execution**: All generated code runs via child_process
 10. **CLI + API**: Both command-line and programmatic interfaces

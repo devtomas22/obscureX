@@ -13,7 +13,7 @@ async def execute(params: Dict[str, Any], context: Dict[str, Any] = None) -> Dic
     ai_service = params.get('aiService')
     
     if not ai_service or not ai_service.is_available():
-        raise Exception('AI (Google Gemini API) is required for context analysis. Please provide an API key.')
+        raise Exception('AI (Anthropic Claude API) is required for context analysis. Please provide an API key.')
     
     # Build prompt for AI
     system_prompt = """You are an AI orchestrator for cryptocurrency ML pipeline optimization.

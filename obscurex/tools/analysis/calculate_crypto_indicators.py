@@ -13,7 +13,7 @@ async def execute(params: Dict[str, Any], context: Dict[str, Any] = None) -> Dic
     ai_service = params.get('aiService')
     
     if not ai_service or not ai_service.is_available():
-        raise Exception('AI (Google Gemini API) is required for calculating technical indicators. Please provide an API key.')
+        raise Exception('AI (Anthropic Claude API) is required for calculating technical indicators. Please provide an API key.')
     
     # Simplified implementation - in the full version, this would:
     # 1. Check long-term memory for cached indicator code

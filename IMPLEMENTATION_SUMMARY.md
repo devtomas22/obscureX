@@ -137,20 +137,19 @@ pip run autonomous-demo
 ```
 
 ### Programmatic Usage
-```javascript
-import { AutonomousOrchestrator } from './autonomous_agent.py';
-import ObscureXAgent from './agent.py';
+```python
+import os
+from obscurex import ObscureXAgent
 
-const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
-const orchestrator = new AutonomousOrchestrator(agent);
+agent = ObscureXAgent(api_key=os.environ.get('ANTHROPIC_API_KEY'))
 
-const result = await orchestrator.runAutonomous({
-  dataFile: 'data.csv',
-  objective: 'Optimize ML pipeline to achieve lowest MSE',
-  mseThreshold: 0.05,
-  maxIterations: 30,
-  verbose: true
-});
+result = await agent.run_optimization_loop({
+    'dataFile': 'data.csv',
+    'initialPrompt': 'Optimize ML pipeline to achieve lowest MSE',
+    'mseThreshold': 0.05,
+    'maxIterations': 30,
+    'verbose': True
+})
 ```
 
 ## Files Added/Modified

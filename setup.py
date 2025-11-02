@@ -19,7 +19,7 @@ setup(
     ],
     python_requires=">=3.8",
     install_requires=[
-        "google-generativeai>=0.3.0",
+        "anthropic>=0.72.0",
         "requests>=2.31.0",
         "pandas>=2.0.0",
         "numpy>=1.24.0",

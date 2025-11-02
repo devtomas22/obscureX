@@ -30,7 +30,7 @@ class ObscureXAgent:
         Initialize the ObscureX Agent.
         
         Args:
-            api_key: Google API key for Gemini (optional, will check env vars)
+            api_key: Anthropic API key for Claude (optional, will check env vars)
             memory_path: Path to short-term memory file
             long_term_memory_path: Path to long-term memory file
         """

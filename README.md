@@ -1,6 +1,6 @@
 # ObscureX AI Agent
 
-An autonomous, self-directed AI agent with modular tools for cryptocurrency analysis, ML pipeline optimization, and Binance data integration. **Now with full autonomous decision-making capabilities** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention. **Requires Google Gemini AI** for code generation and autonomous decision-making.
+An autonomous, self-directed AI agent with modular tools for cryptocurrency analysis, ML pipeline optimization, and Binance data integration. **Now with full autonomous decision-making capabilities** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention. **Requires Anthropic Claude AI** for code generation and autonomous decision-making.
 
 ## Features
 
@@ -90,15 +90,15 @@ pip install -e .
 
 ## Setup
 
-**Google Gemini API key is now required** for all code generation features:
+**Anthropic Claude API key is now required** for all code generation features:
 
 ```bash
-export GOOGLE_API_KEY='your-api-key-here'
+export ANTHROPIC_API_KEY='your-api-key-here'
 # or
-export GEMINI_API_KEY='your-api-key-here'
+export CLAUDE_API_KEY='your-api-key-here'
 ```
 
-Get your key at: https://aistudio.google.com/apikey
+Get your key at: https://console.anthropic.com/
 
 Or pass it when creating the agent:
 
@@ -372,7 +372,7 @@ await agent.execute_tool('testMLPipeline', {'pythonCode': python_code})
 
 #### 8. Generate ML Pipeline (AI-Powered - Required)
 ```python
-# Create new pipeline for Binance data (requires Google Gemini API key)
+# Create new pipeline for Binance data (requires Anthropic Claude API key)
 await agent.execute_tool('generateMLPipeline', {
     'existingCode': None,
     'prompt': 'Create a Binance price prediction pipeline using CatBoost with feature engineering'
@@ -607,7 +607,7 @@ obscurex/
 ├── agent.py             # Main agent class
 ├── services/
 │   ├── __init__.py
-│   └── ai_service.py    # Google Gemini integration
+│   └── ai_service.py    # Anthropic Claude integration
 └── tools/
     ├── __init__.py
     ├── tool_loader.py   # Dynamic tool loader
@@ -622,17 +622,17 @@ obscurex/
 ## Requirements
 
 - Python 3.8 or higher
-- google-generativeai >= 0.3.0
+- anthropic >= 0.72.0
 - requests >= 2.31.0
 - pandas >= 2.0.0
 - numpy >= 1.24.0
 - scikit-learn >= 1.3.0 (optional, for ML features)
-- **Google Gemini API key (REQUIRED for code generation and autonomous features)**
+- **Anthropic Claude API key (REQUIRED for code generation and autonomous features)**
 - Internet connection (for Binance API data download)
 
 ## API Key
 
-The agent **requires** a Google Gemini API key for AI-powered features. Get your key at: https://aistudio.google.com/apikey
+The agent **requires** an Anthropic Claude API key for AI-powered features. Get your key at: https://console.anthropic.com/
 
 **Without an API key:**
 - Technical indicator calculations will fail (requires AI)
