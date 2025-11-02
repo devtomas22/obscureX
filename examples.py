@@ -100,7 +100,7 @@ async def run_examples():
     print()
     
     print('✓ All examples completed successfully!')
-    print('\nNote: AI-powered features require GOOGLE_API_KEY or GEMINI_API_KEY')
+    print('\nNote: AI-powered features require ANTHROPIC_API_KEY or CLAUDE_API_KEY')
     print('      Set the environment variable to test AI features.')
 
 

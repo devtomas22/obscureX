@@ -1,5 +1,5 @@
 """
-AI Service Layer for Google Gemini
+AI Service Layer for Anthropic Claude
 Centralizes all AI-related operations and configuration
 """
 
@@ -7,30 +7,29 @@ import os
 import re
 import json
 from typing import Dict, List, Optional, Any
-import google.generativeai as genai
+from anthropic import Anthropic
 
 
 class AIService:
-    """AI Service for Google Gemini API integration."""
+    """AI Service for Anthropic Claude API integration."""
     
     def __init__(self, api_key: Optional[str] = None):
         """
-        Initialize AI Service with Google Gemini.
+        Initialize AI Service with Anthropic Claude.
         
         Args:
-            api_key: Google API key (optional, will check env vars if not provided)
+            api_key: Anthropic API key (optional, will check env vars if not provided)
         """
         self.client = None
         self.model = None
-        self.model_name = 'gemini-2.0-flash-exp'
+        self.model_name = 'claude-3-5-sonnet-20241022'
         
         # Get API key from parameter or environment variables
-        key = api_key or os.environ.get('GOOGLE_API_KEY') or os.environ.get('GEMINI_API_KEY')
+        key = api_key or os.environ.get('ANTHROPIC_API_KEY') or os.environ.get('CLAUDE_API_KEY')
         
         if key:
-            genai.configure(api_key=key)
-            self.model = genai.GenerativeModel(self.model_name)
-            self.client = True  # Mark as configured
+            self.client = Anthropic(api_key=key)
+            self.model = self.model_name
     
     def is_available(self) -> bool:
         """Check if AI service is available."""
@@ -47,7 +46,7 @@ class AIService:
         max_tokens: int = 1024
     ) -> Dict[str, Any]:
         """
-        Create a message using Gemini.
+        Create a message using Claude.
         
         Args:
             messages: List of message dicts with 'role' and 'content'
@@ -57,55 +56,33 @@ class AIService:
         Returns:
             Response dict with content array
         """
-        if not self.model:
-            raise Exception('AI (Google Gemini API) is required. Please provide an API key.')
+        if not self.client:
+            raise Exception('AI (Anthropic Claude API) is required. Please provide an API key.')
         
-        # Convert messages format to Gemini format
-        conversation_history = []
-        full_prompt = ''
-        
-        # Add system prompt as context if provided
-        if system:
-            full_prompt = f"{system}\n\n"
-        
-        # Combine messages into a single prompt
+        # Convert messages format to Claude format
+        claude_messages = []
         for msg in messages:
-            if msg['role'] == 'user':
-                full_prompt += msg['content'] + '\n'
-            elif msg['role'] == 'assistant':
-                # For multi-turn conversations, use chat
-                if full_prompt.strip():
-                    conversation_history.append({
-                        'role': 'user',
-                        'parts': [full_prompt.strip()]
-                    })
-                conversation_history.append({
-                    'role': 'model',
-                    'parts': [msg['content']]
-                })
-                full_prompt = f"{system}\n\n" if system else ''
+            role = msg['role']
+            # Claude uses 'assistant' instead of 'model'
+            if role == 'model':
+                role = 'assistant'
+            claude_messages.append({
+                'role': role,
+                'content': msg['content']
+            })
         
-        generation_config = genai.types.GenerationConfig(
-            max_output_tokens=max_tokens,
-            temperature=0.7,
+        # Call Claude API
+        response = self.client.messages.create(
+            model=self.model_name,
+            max_tokens=max_tokens,
+            system=system if system else None,
+            messages=claude_messages
         )
         
-        # Use chat if we have conversation history
-        if conversation_history:
-            chat = self.model.start_chat(history=conversation_history)
-            result = chat.send_message(full_prompt, generation_config=generation_config)
-            return {
-                'content': [{'text': result.text}]
-            }
-        else:
-            # Single turn generation
-            result = self.model.generate_content(
-                full_prompt,
-                generation_config=generation_config
-            )
-            return {
-                'content': [{'text': result.text}]
-            }
+        # Convert response to expected format
+        return {
+            'content': [{'text': response.content[0].text}]
+        }
     
     async def generate_code(
         self, 
@@ -114,7 +91,7 @@ class AIService:
         max_tokens: int = 4096
     ) -> str:
         """
-        Generate code using Gemini.
+        Generate code using Claude.
         
         Args:
             prompt: User prompt

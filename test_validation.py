@@ -152,7 +152,7 @@ async def run_tests():
     print('Test 5: ML Pipeline generation (AI-powered)')
     total += 1
     if not agent.ai_service.is_available():
-        print('⚠ SKIP: AI API key not available (test requires Google Gemini API)\n')
+        print('⚠ SKIP: AI API key not available (test requires Anthropic Claude API)\n')
     else:
         try:
             result = await agent.execute_tool('generateMLPipeline', {
