@@ -58,18 +58,20 @@ class AIService {
     // Gemini doesn't have the same message role structure as other APIs
     for (const msg of messages) {
       if (msg.role === 'user') {
-        fullPrompt += msg.content;
+        fullPrompt += msg.content + '\n';
       } else if (msg.role === 'assistant') {
         // For multi-turn conversations, we'd need to use chat
-        conversationHistory.push({
-          role: 'user',
-          parts: [{ text: fullPrompt }]
-        });
+        if (fullPrompt.trim()) {
+          conversationHistory.push({
+            role: 'user',
+            parts: [{ text: fullPrompt.trim() }]
+          });
+        }
         conversationHistory.push({
           role: 'model',
           parts: [{ text: msg.content }]
         });
-        fullPrompt = '';
+        fullPrompt = system ? `${system}\n\n` : '';
       }
     }
 

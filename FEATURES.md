@@ -360,7 +360,7 @@ All core tests passing with 100% success rate.
 ## Dependencies
 
 **Node.js Packages:**
-- `@google/generative-ai` (^0.68.0) - Only external dependency
+- `@google/generative-ai` (^0.21.0) - Only external dependency
 
 **Python Requirements:**
 - Python 3.x
