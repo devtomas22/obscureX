@@ -1,6 +1,3 @@
-# Node modules
-node_modules/
-
 # Memory files
 agent_memory.json
 agent_longterm_memory.json

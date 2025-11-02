@@ -1,7 +1,7 @@
 # ObscureX Agent - Feature Summary
 
 ## Overview
-An autonomous, self-directed AI agent built in Node.js with modular tool architecture, Binance cryptocurrency integration, **fully autonomous decision-making**, orchestration capabilities, dual-layer memory management, and ML pipeline optimization powered by Google Gemini AI. **Version 3.0 introduces complete autonomy** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention.
+An autonomous, self-directed AI agent built in Python with modular tool architecture, Binance cryptocurrency integration, **fully autonomous decision-making**, orchestration capabilities, dual-layer memory management, and ML pipeline optimization powered by Google Gemini AI. **Version 3.0 introduces complete autonomy** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention.
 
 ## Complete Feature Set
 
@@ -41,34 +41,34 @@ An autonomous, self-directed AI agent built in Node.js with modular tool archite
 
 **Tool Organization:**
 ```
-tools/
+obscurex/tools/
 ├── binance/          # Binance API integration (1 tool)
-│   └── downloadBinancePriceHistory.js
+│   └── download_binance_price_history.py
 ├── analysis/         # Crypto analysis (2 tools)
-│   ├── analyzeBinanceData.js
-│   └── calculateCryptoIndicators.js
+│   ├── analyze_binance_data.py
+│   └── calculate_crypto_indicators.py
 ├── csv/              # CSV operations (3 tools)
-│   ├── listTechnicalIndicators.js
-│   ├── addTechnicalIndicator.js
-│   └── removeTechnicalIndicator.js
+│   ├── list_technical_indicators.py
+│   ├── add_technical_indicator.py
+│   └── remove_technical_indicator.py
 ├── ml/               # ML pipeline management (4 tools)
-│   ├── testMLPipeline.js
-│   ├── generateMLPipeline.js
-│   ├── listPythonModules.js
-│   └── installPythonModule.js
+│   ├── test_ml_pipeline.py
+│   ├── generate_ml_pipeline.py
+│   ├── list_python_modules.py
+│   └── install_python_module.py
 ├── memory/           # Memory operations (6 tools)
-│   ├── storeMemory.js
-│   ├── retrieveMemory.js
-│   ├── searchMemory.js
-│   ├── storeLongTermMemory.js
-│   ├── retrieveLongTermMemory.js
-│   └── searchLongTermMemory.js
+│   ├── store_memory.py
+│   ├── retrieve_memory.py
+│   ├── search_memory.py
+│   ├── store_long_term_memory.py
+│   ├── retrieve_long_term_memory.py
+│   └── search_long_term_memory.py
 ├── autonomy/         # 🆕 Autonomous decision-making (4 tools)
-│   ├── analyzeContext.js
-│   ├── getExecutionOptions.js
-│   ├── recommendOptimizationStrategy.js
-│   └── executeAutonomousDecision.js
-└── toolLoader.js     # Dynamic tool loading system
+│   ├── analyze_context.py
+│   ├── get_execution_options.py
+│   ├── recommend_optimization_strategy.py
+│   └── execute_autonomous_decision.py
+└── tool_loader.py    # Dynamic tool loading system
 ```
 
 ### Autonomous Decision-Making System 🆕 NEW in v3.0
@@ -239,75 +239,81 @@ The traditional orchestrator provides structured optimization:
 
 ```bash
 # List all available tools (now 20 tools)
-node agent.js list-tools
+python3 -m obscurex.agent list-tools
 
-# Run the AUTONOMOUS agent 🆕 (v3.0) - AI makes all decisions
-node autonomous_agent.js <dataFile> [threshold] [maxIterations]
+# Run examples demonstrating autonomous features
+python3 examples.py
 
-# Example: Fully autonomous optimization
-node autonomous_agent.js binance_btcusdt_1h.csv 0.05 30
-
-# Or use npm scripts
-npm run autonomous binance_btcusdt_1h.csv 0.05 30
-
-# Run traditional optimization loop with Binance data
-node agent.js optimize [dataFile] [threshold] [maxIterations]
-
-# Example: Traditional optimization
-node agent.js optimize binance_btcusdt_1h.csv 0.05 30
-
-# Run demos
-npm run demo              # Memory and traditional orchestrator demo
-npm run autonomous-demo   # 🆕 Autonomous decision-making demo
-```
-
-# Run optimization loop
-node agent.js optimize [dataFile] [threshold] [maxIterations]
-
-# Examples
-node agent.js optimize data.csv 0.05 30  # Optimize until MSE < 0.05
-
-# Run demos
-npm run demo          # Memory and orchestrator demo
-npm test             # Run validation tests
+# Run validation tests
+python3 test_validation.py
 ```
 
 ### Programmatic API
 
-```javascript
-import ObscureXAgent from './agent.js';
+```python
+import asyncio
+from obscurex import ObscureXAgent
 
-// Initialize with API key
-const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
+async def main():
+    # Initialize with API key
+    agent = ObscureXAgent(api_key='your-api-key')
+    
+    # Execute any tool
+    result = await agent.execute_tool('toolName', params)
+    
+    # Access memory directly
+    # agent.memory          # Short-term memory object
+    # agent.long_term_memory  # Long-term memory object
 
-// Execute any tool
-const result = await agent.executeTool('toolName', params);
-
-// Run orchestrator
-const optimizationResult = await agent.runOptimizationLoop({
-  dataFile: 'data.csv',
-  mseThreshold: 0.05,
-  maxIterations: 50
-});
-
-// Access memory directly
-agent.memory          // Short-term memory object
-agent.longTermMemory  // Long-term memory object
+asyncio.run(main())
 ```
 
 ## File Structure
 
 ```
 obscureX/
-├── agent.js                      # Main agent with dynamic tool loading
-├── tools/                        # Modular tool directory
-│   ├── binance/                  # Binance integration
-│   │   └── downloadBinancePriceHistory.js
-│   ├── analysis/                 # Crypto analysis tools
-│   │   ├── analyzeBinanceData.js
-│   │   └── calculateCryptoIndicators.js
-│   ├── csv/                      # CSV operations
-│   │   ├── listTechnicalIndicators.js
+├── obscurex/                      # Python package
+│   ├── agent.py                   # Main agent with dynamic tool loading
+│   ├── services/                  # Services
+│   │   └── ai_service.py          # Google Gemini AI integration
+│   └── tools/                     # Modular tool directory
+│       ├── binance/               # Binance integration
+│       │   └── download_binance_price_history.py
+│       ├── analysis/              # Crypto analysis tools
+│       │   ├── analyze_binance_data.py
+│       │   └── calculate_crypto_indicators.py
+│       ├── csv/                   # CSV operations
+│       │   ├── list_technical_indicators.py
+│       │   ├── add_technical_indicator.py
+│       │   └── remove_technical_indicator.py
+│       ├── ml/                    # ML pipeline management
+│       │   ├── test_ml_pipeline.py
+│       │   ├── generate_ml_pipeline.py
+│       │   ├── list_python_modules.py
+│       │   └── install_python_module.py
+│       ├── memory/                # Memory operations
+│       │   ├── store_memory.py
+│       │   ├── retrieve_memory.py
+│       │   ├── search_memory.py
+│       │   ├── store_long_term_memory.py
+│       │   ├── retrieve_long_term_memory.py
+│       │   └── search_long_term_memory.py
+│       ├── autonomy/              # 🆕 Autonomous decision-making
+│       │   ├── analyze_context.py
+│       │   ├── get_execution_options.py
+│       │   ├── recommend_optimization_strategy.py
+│       │   └── execute_autonomous_decision.py
+│       └── tool_loader.py         # Dynamic tool loader
+├── examples.py                    # Basic tool usage examples
+├── test_validation.py             # Comprehensive test suite
+├── setup.py                       # Python package setup
+├── requirements.txt               # Python dependencies
+├── .gitignore                     # Excludes memory files, generated code
+├── README.md                      # Full documentation
+├── FEATURES.md                    # This file
+├── agent_memory.json             # Short-term memory (gitignored)
+└── agent_longterm_memory.json    # Long-term memory (gitignored)
+```
 │   │   ├── addTechnicalIndicator.js
 │   │   └── removeTechnicalIndicator.js
 │   ├── ml/                       # ML pipeline tools
@@ -351,16 +357,17 @@ obscureX/
 All core tests passing with 100% success rate.
 
 **Examples:**
-- `examples.js` - Basic tool usage examples
-- `orchestrator_demo.js` - Memory and traditional orchestrator demos
-- `binance_example.js` - Comprehensive Binance integration demo
-- 🆕 `autonomous_demo.js` - Autonomous decision-making features demo
-- 🆕 `autonomous_agent.js` - Fully autonomous agent CLI
+- `examples.py` - Basic tool usage examples
+- `test_validation.py` - Comprehensive test suite
 
 ## Dependencies
 
-**Node.js Packages:**
-- `@google/generative-ai` (^0.21.0) - Only external dependency
+**Python Packages:**
+- `google-generativeai` (>= 0.3.0) - Google Gemini AI integration
+- `requests` (>= 2.31.0) - HTTP requests for Binance API
+- `pandas` (>= 2.0.0) - Data manipulation
+- `numpy` (>= 1.24.0) - Numerical computing
+- `scikit-learn` (>= 1.3.0) - Machine learning (optional)
 
 **Python Requirements:**
 - Python 3.x
