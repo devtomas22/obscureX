@@ -19,7 +19,7 @@ ObscureX now features a **fully autonomous AI agent** that makes all decisions i
 ```bash
 git clone https://github.com/devtomas22/obscureX.git
 cd obscureX
-npm install
+pip install -r requirements.txt
 ```
 
 ### 2. Set API Key
@@ -30,16 +30,16 @@ export GOOGLE_API_KEY='your-api-key-here'
 
 Get your key at: https://aistudio.google.com/apikey
 
-### 3. Run Autonomous Agent
+### 3. Run Examples
 
 ```bash
-# Basic usage
-node autonomous_agent.js data.csv 0.05 30
+# Run examples demonstrating autonomous features
+python3 examples.py
 
-# Or with npm
-npm run autonomous -- data.csv 0.05 30
+# Run validation tests
+python3 test_validation.py
 
-# Parameters:
+# Parameters in code:
 # - data.csv: Your CSV data file (Binance format)
 # - 0.05: Target MSE threshold
 # - 30: Maximum iterations
@@ -83,21 +83,32 @@ Each iteration, the AI:
 
 ## Example: Programmatic Usage
 
-```javascript
-import { AutonomousOrchestrator } from './autonomous_agent.js';
-import ObscureXAgent from './agent.js';
+```python
+import asyncio
+import os
+from obscurex import ObscureXAgent
 
-const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
-const orchestrator = new AutonomousOrchestrator(agent);
+async def main():
+    # Create agent with API key
+    agent = ObscureXAgent(api_key=os.environ.get('GOOGLE_API_KEY'))
+    
+    # Use autonomous decision-making tools
+    result = await agent.execute_tool('executeAutonomousDecision', {
+        'currentState': {
+            'phase': 'optimization',
+            'iteration': 5,
+            'mse': 0.15,
+            'threshold': 0.05,
+            'mseHistory': [0.25, 0.22, 0.20, 0.18, 0.15]
+        },
+        'objective': 'Optimize ML pipeline for cryptocurrency price prediction',
+        'dataFile': 'binance_btcusdt_1h.csv',
+        'aiService': agent.ai_service
+    })
+    
+    print('Autonomous decision executed:', result)
 
-// Let AI make all decisions
-const result = await orchestrator.runAutonomous({
-  dataFile: 'binance_btcusdt_1h.csv',
-  objective: 'Optimize ML pipeline for cryptocurrency price prediction',
-  mseThreshold: 0.05,
-  maxIterations: 30,
-  verbose: true
-});
+asyncio.run(main())
 
 console.log('Objective achieved:', result.objectiveAchieved);
 console.log('Best MSE:', result.bestMSE);
