@@ -55,7 +55,7 @@ class AIService {
     }
 
     // Combine messages into a single prompt
-    // Gemini doesn't have the same message role structure as Claude
+    // Gemini doesn't have the same message role structure as other APIs
     for (const msg of messages) {
       if (msg.role === 'user') {
         fullPrompt += msg.content;

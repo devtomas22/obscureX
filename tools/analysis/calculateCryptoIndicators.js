@@ -22,7 +22,7 @@ export default {
     const { aiService, longTermMemory, saveMemory, longTermMemoryPath } = context;
     
     if (!aiService || !aiService.isAvailable()) {
-      throw new Error('AI (Anthropic API) is required for calculating technical indicators. Please provide an API key.');
+      throw new Error('AI (Google Gemini API) is required for calculating technical indicators. Please provide an API key.');
     }
     
     if (!existsSync(filename)) {

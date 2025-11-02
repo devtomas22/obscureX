@@ -18,7 +18,7 @@ export default {
     const { currentState, objective, dataFile, aiService } = params;
     
     if (!aiService || !aiService.isAvailable()) {
-      throw new Error('AI (Anthropic API) is required for autonomous decisions. Please provide an API key.');
+      throw new Error('AI (Google Gemini API) is required for autonomous decisions. Please provide an API key.');
     }
     
     console.log(`\n=== Autonomous Decision Cycle ===`);

@@ -26,7 +26,8 @@
     "orchestrator",
     "memory",
     "optimization",
-    "anthropic",
+    "google",
+    "gemini",
     "price-prediction",
     "decision-making"
   ],

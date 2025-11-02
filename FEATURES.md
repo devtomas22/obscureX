@@ -373,7 +373,7 @@ All core tests passing with 100% success rate.
 1. **Modular Architecture**: Tools separated into category-based directories
 2. **Dynamic Loading**: Tools loaded at runtime for extensibility
 3. **Binance-First**: All CSV tools understand Binance data format
-4. **No Agent Framework**: Built from scratch with only Anthropic SDK dependency
+4. **No Agent Framework**: Built from scratch with only Google Generative AI SDK dependency
 5. **Dual Memory**: Separate short-term and long-term for different use cases
 6. **JSON Persistence**: Simple, human-readable storage format
 7. **AI-First**: Leverage Gemini for ALL code generation (required)

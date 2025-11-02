@@ -12,7 +12,7 @@ async function runExamples() {
   // Example 1: List all available tools
   console.log('Example 1: List all available tools');
   console.log('-----------------------------------');
-  const tools = agent.listTools();
+  const tools = await agent.listTools();
   tools.forEach(tool => {
     console.log(`- ${tool.name}: ${tool.description}`);
   });

@@ -121,7 +121,7 @@ npm install
 
 ## Setup
 
-**Anthropic API key is now required** for all code generation features:
+**Google Gemini API key is now required** for all code generation features:
 
 ```bash
 export GOOGLE_API_KEY='your-api-key-here'
@@ -456,7 +456,7 @@ await agent.executeTool('testMLPipeline', { pythonCode });
 
 #### 8. Generate ML Pipeline (AI-Powered - Required)
 ```javascript
-// Create new pipeline for Binance data (requires Anthropic API key)
+// Create new pipeline for Binance data (requires Google Gemini API key)
 await agent.executeTool('generateMLPipeline', {
   existingCode: null,
   prompt: 'Create a Binance price prediction pipeline using CatBoost with feature engineering'
@@ -727,7 +727,7 @@ node autonomous_agent.js sample_data.csv 0.05 30
 ## Architecture
 
 - **ObscureXAgent Class**: Main agent with modular tool loading
-- **Anthropic Integration**: Uses Gemini for intelligent code generation and autonomous decision-making
+- **Google Gemini Integration**: Uses Gemini for intelligent code generation and autonomous decision-making
 - **Memory System**: Dual-layer (short-term + long-term) JSON storage
 - **Autonomous Orchestrator**: NEW - Self-directed optimization with AI-driven decisions
 - **Traditional Orchestrator**: Automated optimization loop with learning for Binance data
@@ -744,12 +744,12 @@ node autonomous_agent.js sample_data.csv 0.05 30
 - Node.js 20.x or higher
 - Python 3.x with pip
 - Python packages: numpy, pandas, scikit-learn, catboost (optional)
-- **Anthropic API key (REQUIRED for code generation and autonomous features)**
+- **Google Gemini API key (REQUIRED for code generation and autonomous features)**
 - Internet connection (for Binance API data download)
 
 ## API Key
 
-The agent **requires** an Anthropic API key for AI-powered features. Get your key at: https://aistudio.google.com/apikey
+The agent **requires** an Google Gemini API key for AI-powered features. Get your key at: https://aistudio.google.com/apikey
 
 **Without an API key:**
 - Technical indicator calculations will fail (requires AI)

@@ -180,7 +180,7 @@ const result = await orchestrator.runAutonomous({
 ✅ **Find new ways to optimize** - AI discovers and applies optimization strategies
 ✅ **MSE-driven optimization** - Adapts based on execution results
 ✅ **Create all needed tools** - 4 new autonomy tools created
-✅ **Provide tools for Anthropic** - All tools follow Anthropic tool format
+✅ **Provide tools for Google** - All tools follow Google tool format
 ✅ **Execution flow decision-making** - getExecutionOptions provides available paths
 ✅ **Indicate available options** - Each phase has documented available actions
 

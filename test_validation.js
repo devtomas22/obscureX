@@ -163,8 +163,8 @@ async function runTests() {
       if (existsSync(generated.result.filename)) {
         unlinkSync(generated.result.filename);
       }
-    } else if (!generated.success && generated.error && generated.error.includes('AI (Anthropic API) is required')) {
-      console.log('⚠ SKIP: AI API key not available (test requires Anthropic API)\n');
+    } else if (!generated.success && generated.error && generated.error.includes('AI (Google Gemini API) is required')) {
+      console.log('⚠ SKIP: AI API key not available (test requires Google Gemini API)\n');
       // Don't count as failed since this is expected without API key
     } else {
       console.log(`✗ FAIL: Pipeline generation failed: ${generated.error || 'Unknown error'}\n`);
