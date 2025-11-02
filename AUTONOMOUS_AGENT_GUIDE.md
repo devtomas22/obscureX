@@ -211,14 +211,14 @@ strategy = await agent.execute_tool('recommendOptimizationStrategy', {
     'mseHistory': [0.25, 0.22, 0.20, 0.18, 0.15],
     'currentMSE': 0.15,
     'targetMSE': 0.1,
-  iterationNumber: 5
-});
+    'iterationNumber': 5
+})
 
-// Analyze context for decision
-const decision = await agent.executeTool('analyzeContext', {
-  currentState: { phase: 'optimization', mse: 0.15 },
-  objective: 'Achieve MSE < 0.1'
-});
+# Analyze context for decision
+decision = await agent.execute_tool('analyzeContext', {
+    'currentState': {'phase': 'optimization', 'mse': 0.15},
+    'objective': 'Achieve MSE < 0.1'
+})
 ```
 
 ## Learn More
@@ -226,8 +226,8 @@ const decision = await agent.executeTool('analyzeContext', {
 - **README.md** - Complete feature documentation
 - **FEATURES.md** - Detailed technical specifications
 - **IMPLEMENTATION_SUMMARY.md** - Implementation details
-- **autonomous_examples.js** - Working code examples
-- **autonomous_demo.js** - Interactive demonstrations
+- **examples.py** - Working code examples
+- **test_validation.py** - Test suite and validation
 
 ## Support
 

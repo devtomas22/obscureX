@@ -33,7 +33,7 @@ class AIService:
     
     def is_available(self) -> bool:
         """Check if AI service is available."""
-        return self.client is not None
+        return self.client is not None and self.model is not None
     
     def get_model_name(self) -> str:
         """Get the configured model name."""
