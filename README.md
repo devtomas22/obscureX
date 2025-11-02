@@ -1,6 +1,6 @@
 # ObscureX AI Agent
 
-An autonomous, self-directed AI agent with modular tools for cryptocurrency analysis, ML pipeline optimization, and Binance data integration. **Now with full autonomous decision-making capabilities** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention. **Requires Anthropic's Claude AI** for code generation and autonomous decision-making.
+An autonomous, self-directed AI agent with modular tools for cryptocurrency analysis, ML pipeline optimization, and Binance data integration. **Now with full autonomous decision-making capabilities** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention. **Requires Google Gemini AI** for code generation and autonomous decision-making.
 
 ## Features
 
@@ -124,7 +124,7 @@ npm install
 **Anthropic API key is now required** for all code generation features:
 
 ```bash
-export ANTHROPIC_API_KEY='your-api-key-here'
+export GOOGLE_API_KEY='your-api-key-here'
 ```
 
 Or pass it when creating the agent:
@@ -218,7 +218,7 @@ const result = await agent.executeTool('listTechnicalIndicators', {
 import { AutonomousOrchestrator } from './autonomous_agent.js';
 import ObscureXAgent from './agent.js';
 
-const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 const orchestrator = new AutonomousOrchestrator(agent);
 
 // Run fully autonomous optimization
@@ -241,7 +241,7 @@ console.log(`Iterations: ${result.iterations}`);
 ```javascript
 import ObscureXAgent from './agent.js';
 
-const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 
 // 1. Analyze context and get AI decision
 const contextAnalysis = await agent.executeTool('analyzeContext', {
@@ -252,7 +252,7 @@ const contextAnalysis = await agent.executeTool('analyzeContext', {
     threshold: 0.1
   },
   objective: 'Achieve MSE below 0.1 for cryptocurrency price prediction',
-  anthropic: agent.anthropic
+  aiService: agent.aiService
 });
 
 console.log('AI Decision:', contextAnalysis.result.decision);
@@ -261,7 +261,7 @@ console.log('AI Decision:', contextAnalysis.result.decision);
 const options = await agent.executeTool('getExecutionOptions', {
   currentPhase: 'optimization',
   currentState: { mse: 0.15, threshold: 0.1 },
-  anthropic: agent.anthropic
+  aiService: agent.aiService
 });
 
 console.log('Available actions:', options.result.options);
@@ -272,7 +272,7 @@ const strategy = await agent.executeTool('recommendOptimizationStrategy', {
   currentMSE: 0.15,
   targetMSE: 0.1,
   iterationNumber: 5,
-  anthropic: agent.anthropic
+  aiService: agent.aiService
 });
 
 console.log('Recommended strategy:', strategy.result.recommendation);
@@ -283,7 +283,7 @@ console.log('Recommended strategy:', strategy.result.recommendation);
 ```javascript
 import ObscureXAgent from './agent.js';
 
-const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 
 // Run optimization loop with Binance data
 const result = await agent.runOptimizationLoop({
@@ -535,7 +535,7 @@ const result = await agent.executeTool('analyzeContext', {
     threshold: 0.1
   },
   objective: 'Achieve MSE below 0.1 for cryptocurrency price prediction',
-  anthropic: agent.anthropic
+  aiService: agent.aiService
 });
 
 // Returns:
@@ -559,7 +559,7 @@ const result = await agent.executeTool('analyzeContext', {
 const result = await agent.executeTool('getExecutionOptions', {
   currentPhase: 'optimization',
   currentState: { mse: 0.15, threshold: 0.1 },
-  anthropic: agent.anthropic
+  aiService: agent.aiService
 });
 
 // Returns available actions for the current phase:
@@ -592,7 +592,7 @@ const result = await agent.executeTool('recommendOptimizationStrategy', {
   currentMSE: 0.15,
   targetMSE: 0.1,
   iterationNumber: 5,
-  anthropic: agent.anthropic
+  aiService: agent.aiService
 });
 
 // Returns:
@@ -626,7 +626,7 @@ const result = await agent.executeTool('executeAutonomousDecision', {
   },
   objective: 'Optimize ML pipeline for cryptocurrency price prediction',
   dataFile: 'binance_btcusdt_1h.csv',
-  anthropic: agent.anthropic
+  aiService: agent.aiService
 });
 
 // Executes:
@@ -646,7 +646,7 @@ const result = await agent.executeTool('executeAutonomousDecision', {
 import { AutonomousOrchestrator } from './autonomous_agent.js';
 import ObscureXAgent from './agent.js';
 
-const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 const orchestrator = new AutonomousOrchestrator(agent);
 
 // Let AI make all decisions autonomously
@@ -727,7 +727,7 @@ node autonomous_agent.js sample_data.csv 0.05 30
 ## Architecture
 
 - **ObscureXAgent Class**: Main agent with modular tool loading
-- **Anthropic Integration**: Uses Claude for intelligent code generation and autonomous decision-making
+- **Anthropic Integration**: Uses Gemini for intelligent code generation and autonomous decision-making
 - **Memory System**: Dual-layer (short-term + long-term) JSON storage
 - **Autonomous Orchestrator**: NEW - Self-directed optimization with AI-driven decisions
 - **Traditional Orchestrator**: Automated optimization loop with learning for Binance data
@@ -749,7 +749,7 @@ node autonomous_agent.js sample_data.csv 0.05 30
 
 ## API Key
 
-The agent **requires** an Anthropic API key for AI-powered features. Get your key at: https://console.anthropic.com/
+The agent **requires** an Anthropic API key for AI-powered features. Get your key at: https://aistudio.google.com/apikey
 
 **Without an API key:**
 - Technical indicator calculations will fail (requires AI)

@@ -33,6 +33,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.68.0"
+    "@google/generative-ai": "^0.21.0"
   }
 }

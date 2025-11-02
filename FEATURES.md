@@ -1,7 +1,7 @@
 # ObscureX Agent - Feature Summary
 
 ## Overview
-An autonomous, self-directed AI agent built in Node.js with modular tool architecture, Binance cryptocurrency integration, **fully autonomous decision-making**, orchestration capabilities, dual-layer memory management, and ML pipeline optimization powered by Anthropic's Claude AI. **Version 3.0 introduces complete autonomy** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention.
+An autonomous, self-directed AI agent built in Node.js with modular tool architecture, Binance cryptocurrency integration, **fully autonomous decision-making**, orchestration capabilities, dual-layer memory management, and ML pipeline optimization powered by Google Gemini AI. **Version 3.0 introduces complete autonomy** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention.
 
 ## Complete Feature Set
 
@@ -167,7 +167,7 @@ The traditional orchestrator provides structured optimization:
 
 **Key Features:**
 - Iterative ML pipeline optimization loop
-- AI-powered strategy generation using Claude
+- AI-powered strategy generation using Gemini
 - Automatic MSE tracking and comparison
 - Best model persistence in long-term memory
 - Configurable MSE threshold and iteration limits
@@ -208,8 +208,8 @@ The traditional orchestrator provides structured optimization:
 
 ### AI Integration
 
-**Anthropic Claude Integration (REQUIRED):**
-- Model: `claude-3-5-sonnet-20241022`
+**Google Gemini Integration (REQUIRED):**
+- Model: `gemini-2.0-flash-exp`
 - Used for ALL code generation (technical indicators and ML pipelines)
 - **🆕 Used for autonomous decision-making** - analyzes context, decides actions
 - **🆕 Used for strategy recommendations** - MSE trend analysis and optimization suggestions
@@ -278,7 +278,7 @@ npm test             # Run validation tests
 import ObscureXAgent from './agent.js';
 
 // Initialize with API key
-const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 
 // Execute any tool
 const result = await agent.executeTool('toolName', params);
@@ -360,7 +360,7 @@ All core tests passing with 100% success rate.
 ## Dependencies
 
 **Node.js Packages:**
-- `@anthropic-ai/sdk` (^0.68.0) - Only external dependency
+- `@google/generative-ai` (^0.68.0) - Only external dependency
 
 **Python Requirements:**
 - Python 3.x
@@ -376,7 +376,7 @@ All core tests passing with 100% success rate.
 4. **No Agent Framework**: Built from scratch with only Anthropic SDK dependency
 5. **Dual Memory**: Separate short-term and long-term for different use cases
 6. **JSON Persistence**: Simple, human-readable storage format
-7. **AI-First**: Leverage Claude for ALL code generation (required)
+7. **AI-First**: Leverage Gemini for ALL code generation (required)
 8. **Intelligent Caching**: Generated indicator code cached in long-term memory
 9. **Python Execution**: All generated code runs via child_process
 10. **CLI + API**: Both command-line and programmatic interfaces

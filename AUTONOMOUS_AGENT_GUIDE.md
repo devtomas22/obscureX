@@ -25,10 +25,10 @@ npm install
 ### 2. Set API Key
 
 ```bash
-export ANTHROPIC_API_KEY='your-api-key-here'
+export GOOGLE_API_KEY='your-api-key-here'
 ```
 
-Get your key at: https://console.anthropic.com/
+Get your key at: https://aistudio.google.com/apikey
 
 ### 3. Run Autonomous Agent
 
@@ -87,7 +87,7 @@ Each iteration, the AI:
 import { AutonomousOrchestrator } from './autonomous_agent.js';
 import ObscureXAgent from './agent.js';
 
-const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 const orchestrator = new AutonomousOrchestrator(agent);
 
 // Let AI make all decisions
@@ -166,7 +166,7 @@ All based on MSE trends and memory!
 ## Troubleshooting
 
 **"AI API key not available"**
-- Set ANTHROPIC_API_KEY environment variable
+- Set GOOGLE_API_KEY environment variable
 
 **"No data file found"**
 - Provide valid CSV file as first argument
@@ -184,7 +184,7 @@ All based on MSE trends and memory!
 ### Use Individual Autonomy Tools
 
 ```javascript
-const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 
 // Get execution options
 const options = await agent.executeTool('getExecutionOptions', {

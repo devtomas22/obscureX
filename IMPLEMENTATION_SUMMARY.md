@@ -98,7 +98,7 @@ Key Features:
    - Dynamic loading supports new autonomy tools
 
 2. **agent.js**
-   - Updated executeTool to pass anthropic client to autonomy tools
+   - Updated executeTool to pass aiService to autonomy tools
    - Added autonomy tools to AI-required tools list
    - No breaking changes to existing functionality
 
@@ -141,7 +141,7 @@ npm run autonomous-demo
 import { AutonomousOrchestrator } from './autonomous_agent.js';
 import ObscureXAgent from './agent.js';
 
-const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 const orchestrator = new AutonomousOrchestrator(agent);
 
 const result = await orchestrator.runAutonomous({

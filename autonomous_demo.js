@@ -9,13 +9,13 @@ async function demoAutonomyTools() {
   console.log('║      ObscureX Autonomous AI Agent - Tools Demo          ║');
   console.log('╚══════════════════════════════════════════════════════════╝\n');
 
-  const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+  const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 
   // Check if API key is available
   if (!agent.aiService.isAvailable()) {
-    console.log('⚠️  ANTHROPIC_API_KEY not set. Running limited demo.\n');
+    console.log('⚠️  GOOGLE_API_KEY not set. Running limited demo.\n');
     console.log('To see full AI-powered features, set your API key:');
-    console.log('  export ANTHROPIC_API_KEY="your-key-here"\n');
+    console.log('  export GOOGLE_API_KEY="your-key-here"\n');
   }
 
   console.log('=== Demo 1: Get Execution Options ===\n');
@@ -179,7 +179,7 @@ async function demoToolIntegration() {
   console.log('║         Autonomous Tools Integration Demo               ║');
   console.log('╚══════════════════════════════════════════════════════════╝\n');
 
-  const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+  const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 
   console.log('This demo shows how autonomy tools integrate with the agent.\n');
 

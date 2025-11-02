@@ -69,7 +69,7 @@ async function demonstrateOrchestrator() {
   console.log('  node agent.js optimize [dataFile] [threshold] [maxIterations]');
   console.log('\nExample:');
   console.log('  node agent.js optimize sample_data.csv 0.05 10');
-  console.log('\nNote: Requires ANTHROPIC_API_KEY environment variable for AI-powered optimization\n');
+  console.log('\nNote: Requires GOOGLE_API_KEY environment variable for AI-powered optimization\n');
   
   // Show a mini example without actual API calls
   const agent = new ObscureXAgent();
@@ -157,7 +157,7 @@ async function main() {
     console.log('- agent_memory.json');
     console.log('- agent_longterm_memory.json');
     console.log('\nTo run actual optimization:');
-    console.log('1. Set ANTHROPIC_API_KEY environment variable');
+    console.log('1. Set GOOGLE_API_KEY environment variable');
     console.log('2. Prepare a CSV data file');
     console.log('3. Run: node agent.js optimize data.csv 0.05 10\n');
     
