@@ -434,7 +434,7 @@ async function main() {
     console.log('Usage: node autonomous_agent.js <dataFile> [threshold] [maxIterations]');
     console.log('\nExample:');
     console.log('  node autonomous_agent.js sample_data.csv 0.05 30');
-    console.log('\nNote: Requires ANTHROPIC_API_KEY environment variable');
+    console.log('\nNote: Requires GOOGLE_API_KEY environment variable');
     process.exit(1);
   }
 
@@ -442,7 +442,7 @@ async function main() {
   const threshold = parseFloat(process.argv[3]) || 0.1;
   const maxIter = parseInt(process.argv[4]) || 50;
 
-  const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+  const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
   const orchestrator = new AutonomousOrchestrator(agent);
 
   try {

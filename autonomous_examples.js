@@ -16,7 +16,7 @@ console.log('╚═════════════════════�
 async function example1_BasicAutonomyTools() {
   console.log('=== Example 1: Using Individual Autonomy Tools ===\n');
   
-  const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+  const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
 
   // 1. Get execution options
   console.log('1. Getting execution options for optimization phase...');
@@ -64,7 +64,7 @@ async function example2_FullAutonomousAgent() {
   console.log('• Learns from results and adjusts strategy\n');
 
   console.log('To run the full autonomous agent:');
-  console.log('  export ANTHROPIC_API_KEY="your-key"');
+  console.log('  export GOOGLE_API_KEY="your-key"');
   console.log('  node autonomous_agent.js data.csv 0.05 30\n');
   
   console.log('Or programmatically:');
@@ -72,7 +72,7 @@ async function example2_FullAutonomousAgent() {
   import { AutonomousOrchestrator } from './autonomous_agent.js';
   import ObscureXAgent from './agent.js';
   
-  const agent = new ObscureXAgent(process.env.ANTHROPIC_API_KEY);
+  const agent = new ObscureXAgent(process.env.GOOGLE_API_KEY);
   const orchestrator = new AutonomousOrchestrator(agent);
   
   const result = await orchestrator.runAutonomous({
@@ -209,7 +209,7 @@ async function main() {
     console.log('╚════════════════════════════════════════════════════════╝\n');
     
     console.log('Next Steps:');
-    console.log('1. Set ANTHROPIC_API_KEY environment variable');
+    console.log('1. Set GOOGLE_API_KEY environment variable');
     console.log('2. Prepare a CSV data file (or download from Binance)');
     console.log('3. Run: node autonomous_agent.js data.csv 0.05 30');
     console.log('4. Watch the AI make autonomous decisions!\n');

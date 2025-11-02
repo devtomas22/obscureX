@@ -15,7 +15,7 @@ export default {
     const { existingCode, prompt, aiService = null } = params;
     
     if (!aiService || !aiService.isAvailable()) {
-      throw new Error('AI (Anthropic API) is required for generating ML pipelines. Please provide an API key.');
+      throw new Error('AI (Google Gemini API) is required for generating ML pipelines. Please provide an API key.');
     }
     
     let code;

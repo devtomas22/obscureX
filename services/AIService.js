@@ -1,18 +1,19 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 /**
- * AI Service Layer for Anthropic Claude
+ * AI Service Layer for Google Gemini
  * Centralizes all AI-related operations and configuration
  */
 class AIService {
   constructor(apiKey = null) {
     this.client = null;
-    this.modelName = 'claude-sonnet-4-20250514';
+    this.model = null;
+    this.modelName = 'gemini-2.0-flash-exp';
     
-    if (apiKey || process.env.ANTHROPIC_API_KEY) {
-      this.client = new Anthropic({
-        apiKey: apiKey || process.env.ANTHROPIC_API_KEY
-      });
+    const key = apiKey || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+    if (key) {
+      this.client = new GoogleGenerativeAI(key);
+      this.model = this.client.getGenerativeModel({ model: this.modelName });
     }
   }
 
@@ -20,7 +21,7 @@ class AIService {
    * Check if AI service is available
    */
   isAvailable() {
-    return this.client !== null;
+    return this.client !== null && this.model !== null;
   }
 
   /**
@@ -31,7 +32,7 @@ class AIService {
   }
 
   /**
-   * Create a message using Claude
+   * Create a message using Gemini
    * @param {Object} options - Message options
    * @param {Array} options.messages - Array of message objects
    * @param {string} options.system - System prompt
@@ -39,25 +40,70 @@ class AIService {
    * @returns {Promise<Object>} - Message response
    */
   async createMessage({ messages, system, max_tokens = 1024 }) {
-    if (!this.client) {
-      throw new Error('AI (Anthropic API) is required. Please provide an API key.');
+    if (!this.model) {
+      throw new Error('AI (Google Gemini API) is required. Please provide an API key.');
     }
 
-    const params = {
-      model: this.modelName,
-      max_tokens,
-      messages
+    // Convert messages format to Gemini format
+    // Gemini uses a simpler format with 'parts' array
+    let conversationHistory = [];
+    let fullPrompt = '';
+
+    // Add system prompt as context if provided
+    if (system) {
+      fullPrompt = `${system}\n\n`;
+    }
+
+    // Combine messages into a single prompt
+    // Gemini doesn't have the same message role structure as other APIs
+    for (const msg of messages) {
+      if (msg.role === 'user') {
+        fullPrompt += msg.content + '\n';
+      } else if (msg.role === 'assistant') {
+        // For multi-turn conversations, we'd need to use chat
+        if (fullPrompt.trim()) {
+          conversationHistory.push({
+            role: 'user',
+            parts: [{ text: fullPrompt.trim() }]
+          });
+        }
+        conversationHistory.push({
+          role: 'model',
+          parts: [{ text: msg.content }]
+        });
+        fullPrompt = system ? `${system}\n\n` : '';
+      }
+    }
+
+    const generationConfig = {
+      maxOutputTokens: max_tokens,
+      temperature: 0.7,
     };
 
-    if (system) {
-      params.system = system;
+    // Use chat if we have conversation history
+    if (conversationHistory.length > 0) {
+      const chat = this.model.startChat({
+        history: conversationHistory,
+        generationConfig
+      });
+      const result = await chat.sendMessage(fullPrompt);
+      return {
+        content: [{ text: result.response.text() }]
+      };
+    } else {
+      // Single turn generation
+      const result = await this.model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
+        generationConfig
+      });
+      return {
+        content: [{ text: result.response.text() }]
+      };
     }
-
-    return await this.client.messages.create(params);
   }
 
   /**
-   * Generate code using Claude
+   * Generate code using Gemini
    * @param {string} prompt - User prompt
    * @param {string} systemPrompt - System prompt
    * @param {number} maxTokens - Maximum tokens

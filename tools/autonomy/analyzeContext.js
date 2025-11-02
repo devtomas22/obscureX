@@ -15,7 +15,7 @@ export default {
     const { currentState, objective, aiService } = params;
     
     if (!aiService || !aiService.isAvailable()) {
-      throw new Error('AI (Anthropic API) is required for context analysis. Please provide an API key.');
+      throw new Error('AI (Google Gemini API) is required for context analysis. Please provide an API key.');
     }
     
     // Gather context from memory
