@@ -1,0 +1,2 @@
+[console_scripts]
+obscurex = obscurex.agent:main
