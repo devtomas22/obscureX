@@ -2,7 +2,22 @@
 
 An autonomous, self-directed AI agent with modular tools for cryptocurrency analysis, ML pipeline optimization, and Binance data integration. **Now with full autonomous decision-making capabilities** - the agent makes intelligent decisions based on context and memory, optimizing ML pipelines without human intervention. **Requires Anthropic Claude AI** for code generation and autonomous decision-making.
 
+**NEW: Google ADK-Style Interface** - Now includes a Google ADK (Agent Development Kit) compatible interface using Anthropic Claude. Build AI agents with a familiar, code-first API. See [ADK_README.md](ADK_README.md) for details.
+
 ## Features
+
+### 🎯 Google ADK-Style Interface (NEW)
+
+**Code-First Agent Development with Anthropic Claude:**
+- **ADK-Compatible API** - Familiar Google ADK interface, powered by Anthropic Claude
+- **LlmAgent** - Agent class with tool integration and Claude models
+- **FunctionTool** - Wrap Python functions as agent tools
+- **InMemorySessionService** - Built-in session management
+- **Runner** - Execute agent queries with conversation history
+- **FastAPI Integration** - Serve agents via HTTP endpoints
+- **No Gemini Required** - Uses Anthropic Claude instead of Google Gemini
+
+See [ADK_README.md](ADK_README.md) for complete documentation and examples.
 
 ### 🤖 Autonomous Decision-Making
 
@@ -111,6 +126,42 @@ Without an API key, only basic tools like memory management, CSV operations (lis
 
 ## Usage
 
+### Google ADK-Style Interface (Quick Start)
+
+```python
+# Import core ADK components
+from obscurex.adk import LlmAgent, FunctionTool, InMemorySessionService, Runner
+
+# Define a tool as a standard Python function
+def echo_tool(context, message: str) -> str:
+    return f"Echo: {message}"
+
+echo_tool_decl = FunctionTool(
+    name="echo_tool",
+    func=echo_tool,
+    description="Repeats the user's message"
+)
+
+# Instantiate an agent bound to Claude (not Gemini)
+agent = LlmAgent(
+    name="EchoAgent",
+    model="claude-3-5-sonnet-20241022",  # Using Anthropic Claude
+    instruction="Repeat what the user says.",
+    tools=[echo_tool_decl]
+)
+
+# Run agent in a local Python context
+runner = Runner(agent=agent, session_service=InMemorySessionService())
+
+response = runner.query_sync(
+    prompt="Say hello, agent!",
+    user_id="demo"
+)
+print(response)
+```
+
+**For complete ADK documentation, examples, and FastAPI integration, see [ADK_README.md](ADK_README.md)**
+
 ### Command Line Interface
 
 ```bash
@@ -122,6 +173,11 @@ python3 examples.py
 
 # Run tests
 python3 test_validation.py
+
+# ADK Examples (NEW)
+python3 adk_agent_example.py         # Run ADK-style agent demo
+python3 adk_fastapi_example.py       # Start ADK FastAPI server
+python3 test_adk.py                  # Test ADK implementation
 ```
 
 ### Programmatic Usage
@@ -605,6 +661,13 @@ python3 test_validation.py
 obscurex/
 ├── __init__.py          # Package initialization
 ├── agent.py             # Main agent class
+├── adk/                 # Google ADK-style interface (NEW)
+│   ├── __init__.py
+│   ├── agents.py        # LlmAgent class
+│   ├── tools.py         # FunctionTool class
+│   ├── sessions.py      # InMemorySessionService
+│   ├── runners.py       # Runner class
+│   └── fastapi_integration.py  # FastAPI support
 ├── services/
 │   ├── __init__.py
 │   └── ai_service.py    # Anthropic Claude integration
@@ -627,6 +690,9 @@ obscurex/
 - pandas >= 2.0.0
 - numpy >= 1.24.0
 - scikit-learn >= 1.3.0 (optional, for ML features)
+- fastapi >= 0.104.0 (for ADK FastAPI integration)
+- uvicorn >= 0.24.0 (for ADK FastAPI server)
+- pydantic >= 2.0.0 (for ADK FastAPI integration)
 - **Anthropic Claude API key (REQUIRED for code generation and autonomous features)**
 - Internet connection (for Binance API data download)
 
@@ -643,8 +709,9 @@ The agent **requires** an Anthropic Claude API key for AI-powered features. Get 
 ## Features
 
 - 🤖 **FULLY AUTONOMOUS AGENT** - AI makes all decisions based on context and memory
+- 🎯 **Google ADK-Style Interface** - Familiar agent development API with Anthropic Claude
 - 🧠 **Context-aware decision-making** - One AI request per situation with full context
-- 🎯 **Execution flow control** - AI decides which tools to use and when
+- 🔧 **Execution flow control** - AI decides which tools to use and when
 - 📊 **MSE-driven optimization** - Adaptive strategies based on performance trends
 - 🔄 **Memory-based learning** - Agent learns from past attempts and successes
 - 🛠️ **20 modular tools** - Organized in 6 categories
@@ -654,6 +721,7 @@ The agent **requires** an Anthropic Claude API key for AI-powered features. Get 
 - ⚡ **Performance optimization** - Cached code reused across sessions
 - 🚫 **No template fallback** - ML pipeline generation requires AI (more reliable)
 - 🐍 **Python execution** - All generated code runs via subprocess
+- 🌐 **FastAPI Integration** - Serve agents via HTTP endpoints
 
 ## License
 
