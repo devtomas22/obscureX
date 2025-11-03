@@ -101,6 +101,8 @@ def add_adk_fastapi_endpoint(
         adk_agent: ADKAgent instance
         path: Base path for the endpoint
     """
+    # Normalize path
+    base_path = path.rstrip('/') if path != '/' else ''
     
     @app.get(path)
     async def root():
@@ -111,7 +113,7 @@ def add_adk_fastapi_endpoint(
             "status": "running"
         }
     
-    @app.post(path + "query" if not path.endswith("/") else "query")
+    @app.post(f"{base_path}/query")
     async def query(request: QueryRequest) -> QueryResponse:
         """
         Query the agent.
@@ -140,7 +142,7 @@ def add_adk_fastapi_endpoint(
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
     
-    @app.get(path + "health" if not path.endswith("/") else "health")
+    @app.get(f"{base_path}/health")
     async def health():
         """Health check endpoint."""
         return {"status": "healthy"}

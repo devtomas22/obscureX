@@ -41,6 +41,7 @@ class FunctionTool:
             JSON Schema for parameters
         """
         import inspect
+        from typing import List as ListType, Dict as DictType
         
         sig = inspect.signature(self.func)
         properties = {}
@@ -61,9 +62,9 @@ class FunctionTool:
                     param_type = "number"
                 elif annotation == bool:
                     param_type = "boolean"
-                elif annotation in (list, List):
+                elif annotation in (list, ListType):
                     param_type = "array"
-                elif annotation in (dict, Dict):
+                elif annotation in (dict, DictType):
                     param_type = "object"
             
             properties[param_name] = {

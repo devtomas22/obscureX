@@ -111,23 +111,26 @@ class LlmAgent:
         # Handle tool use
         if response.stop_reason == "tool_use":
             tool_results = []
-            for content_block in response.content:
-                if content_block.type == "tool_use":
-                    tool_name = content_block.name
-                    tool_input = content_block.input
-                    
-                    # Execute the tool
-                    try:
-                        result = self._execute_tool(tool_name, tool_input)
-                        tool_results.append({
-                            "tool_name": tool_name,
-                            "result": result
-                        })
-                    except Exception as e:
-                        tool_results.append({
-                            "tool_name": tool_name,
-                            "error": str(e)
-                        })
+            tool_use_blocks = [b for b in response.content if b.type == "tool_use"]
+            
+            for block in tool_use_blocks:
+                tool_name = block.name
+                tool_input = block.input
+                
+                # Execute the tool
+                try:
+                    result = self._execute_tool(tool_name, tool_input)
+                    tool_results.append({
+                        "tool_name": tool_name,
+                        "result": result,
+                        "block_id": block.id
+                    })
+                except Exception as e:
+                    tool_results.append({
+                        "tool_name": tool_name,
+                        "error": str(e),
+                        "block_id": block.id
+                    })
             
             # Continue conversation with tool results
             messages.append({"role": "assistant", "content": response.content})
@@ -136,10 +139,10 @@ class LlmAgent:
                 "content": [
                     {
                         "type": "tool_result",
-                        "tool_use_id": block.id,
-                        "content": str(tool_results[i]["result"]) if "result" in tool_results[i] else tool_results[i]["error"]
+                        "tool_use_id": tr["block_id"],
+                        "content": str(tr["result"]) if "result" in tr else tr["error"]
                     }
-                    for i, block in enumerate([b for b in response.content if b.type == "tool_use"])
+                    for tr in tool_results
                 ]
             })
             
